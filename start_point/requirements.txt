@@ -1,0 +1,11 @@
+pulp==2.7.0
+ujson
+PyPDF2
+PyCryptodome
+nltk
+tqdm
+requests
+numpy
+scikit-learn
+bs4
+python-magic
