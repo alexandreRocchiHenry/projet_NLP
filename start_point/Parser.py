@@ -60,7 +60,7 @@ class Parser:
         call(all_children, 0)
 
         ## Write to file
-        txt_file = open(f"txts/{Path(fname).stem}.txt", "w+", encoding="utf-8")
+        txt_file = open(f"../data/txts/{Path(fname).stem}.txt", "w+", encoding="utf-8")
         print(THE_CONTENT["text"], file=txt_file)
         txt_file.close()
         
@@ -72,7 +72,7 @@ class Parser:
             f = open(fname, "rb")
             reader = PdfReader(f)
             words = set()
-            txt_file = open(f"txts/{Path(fname).stem}.txt", "w+", encoding="utf-8")
+            txt_file = open(f"../data/txts/{Path(fname).stem}.txt", "w+", encoding="utf-8")
             
             for page in reader.pages:
                 page_contents = page.extract_text()
