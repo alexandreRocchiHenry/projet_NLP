@@ -10,7 +10,7 @@ requests.packages.urllib3.disable_warnings()
 URL_FILE = "list_urls.txt"
 MANIFESTOS_FILE = "all_manifestos.csv"
 UA_FILE = "user_agents.txt"
-OUT_FOLDER = "./docs"
+OUT_FOLDER = "../data/docs"
 LOG_FILE = "dl_docs.log"
 log_fp = open(LOG_FILE, "w")
 
