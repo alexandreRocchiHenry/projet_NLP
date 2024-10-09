@@ -2,3 +2,5 @@ dataset/
 data/
 .env_projet_NLP/
 *.log
+dl_docs.log
+parse.log

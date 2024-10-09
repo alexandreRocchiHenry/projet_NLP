@@ -15,7 +15,7 @@ p = Parser(log_file=log_fp)
 if not os.path.exists(OUT_FOLDER):
     os.makedirs(OUT_FOLDER)
 
-all_files = [f for f in glob.glob("./docs/*")]
+all_files = [f for f in glob.glob("../data/docs/*")]
 
 for i in tqdm(range(len(all_files))):
     fname = all_files[i]
