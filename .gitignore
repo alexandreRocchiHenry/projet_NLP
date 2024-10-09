@@ -1,3 +1,4 @@
 dataset/
 data/
 .env_projet_NLP/
+*.log
