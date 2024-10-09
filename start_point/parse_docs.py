@@ -6,7 +6,7 @@ import magic
 from Parser import Parser
 
 LOG_FILE = "parse.log"
-OUT_FOLDER = "./txts"
+OUT_FOLDER = "../data/txts"
 log_fp = open(LOG_FILE, "w")
 
 p = Parser(log_file=log_fp)
