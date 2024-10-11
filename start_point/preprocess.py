@@ -5,16 +5,11 @@ import glob
 import nltk as nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-import langid
 import pandas as pd
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-
-manifestos_df = pd.read_csv('all_manifestos.csv')
-metadata_df = pd.read_csv('mapaie-metadata.csv')
-
-
+nltk.download('punkt_tab')
 
 corpus = []
 stop_words = set(stopwords.words('english'))
@@ -28,7 +23,7 @@ if not os.path.exists(OUT_FOLDER):
 print(f'Preprocessing...')
 for i, filename in enumerate(tqdm(glob.glob('../data/txts/*.txt'))):
     name = filename.split('/')[1].split('.')[0]
-    with open(filename) as f:
+    with open(filename, encoding="utf8") as f:
         lines = f.read().strip()
         
         # Tokenize
@@ -65,7 +60,7 @@ for i, d in enumerate(tqdm(corpus)):
     words = d.split()
     # filt_words = [w for w in words if w in words_to_keep]
     # corpus_filt_tfidf.append(filt_words)
-    f = open(f"{OUT_FOLDER}/{i}.txt", "w")
+    f = open(f"{OUT_FOLDER}/{i}.txt", "w", encoding="utf8")
     f.write(" ".join(words) + "\n")
     f.close()
 

@@ -12,3 +12,5 @@ python-magic
 altair
 matplotlib
 transformers
+pandas
+langid
