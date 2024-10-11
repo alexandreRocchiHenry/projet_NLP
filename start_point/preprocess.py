@@ -9,11 +9,13 @@ import pandas as pd
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-nltk.download('punkt_tab')
+
+
+
 
 corpus = []
 stop_words = set(stopwords.words('english'))
-custom_stop_words = set('')
+
 OUT_FOLDER = "../data/preprocessed"
 
 # Create output directory if it does not exist
@@ -26,20 +28,29 @@ for i, filename in enumerate(tqdm(glob.glob('../data/txts/*.txt'))):
     with open(filename, encoding="utf8") as f:
         lines = f.read().strip()
         
-        # Tokenize
-        tokens = word_tokenize(lines)
-        # Remove tokens with length < 3, not a link and not in stop words
-        tokens = (' ').join([t.lower() for t in tokens
-            if len(t) >= 3 
-            and (t.isalpha() or t in r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
-            and t.lower() not in stop_words 
-            and not "http" in t.lower()
-        ])
+#         # Tokenize
+#         tokens = word_tokenize(lines)
+#         # Remove tokens with length < 3, not a link and not in stop words
+#         tokens = (' ').join([t.lower() for t in tokens
+#             if len(t) >= 3 
+#             and (t.isalpha() or t in r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
+#             and t.lower() not in stop_words 
+#             and not "http" in t.lower()
+#         ])
 
-        # ngrams ?
+#         # ngrams ?
 
-        # Save tokens
-        corpus.append(tokens)
+#         # Save tokens
+#         corpus.append(tokens)
+
+for text in df['text'].to_list():
+    langue, confiance = langid.classify(text)
+    print(langue)
+    if langue != 'en':
+        df.drop(df.index(df['text']==text))
+           
+
+
 
 
 # TF-IDF
