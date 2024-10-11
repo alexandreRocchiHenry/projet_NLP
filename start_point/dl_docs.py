@@ -5,6 +5,7 @@ from random import choice
 from tqdm import tqdm
 import csv
 
+
 requests.packages.urllib3.disable_warnings()
 
 URL_FILE = "list_urls.txt"

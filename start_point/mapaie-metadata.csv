@@ -3,7 +3,6 @@ doc_id|Name of the document|source
 1|AI Decolonial Manyfesto|.
 2|Asimov’s three laws of Robotics|.
 3|Intel Recommends Public Policy Principles for Artificial Intelligence|. Intel ?
-5|Murphy and Wood’s three laws of Responsible Robotics|.
 6|Six Principles of Artificial Intelligence|.
 7|The #FreeAI Manifesto|.
 8|The Partnership of the Future|.
@@ -356,7 +355,6 @@ doc_id|Name of the document|source
 377|Ethics policy|Icelandic Institute for Intelligent Machines (IIIM)
 378|AI needs an ethical compass. This tool can help|IDEO
 379|Ethical Design Manifesto|ind.ie
-381|Ethics and Human Rights|India Government
 382|2020 Handbook on AI and International Law|Indian Society of Artificial Intelligence and Law (ISAIL)
 383|Guidance on AI and data protection|Information Commissioner Office
 384|Guidance on the AI auditing framework|Information Commissioner Office
@@ -384,8 +382,6 @@ doc_id|Name of the document|source
 410|Global opinion and expectations about AI|Ipsos
 411|Standardization in the area of Artificial Intelligence (ISO/IEC JTC 1/SC 42)|ISO
 412|Strategic Program on Artificiel Intelligence 2022-2024|Italian Government
-414|AI Strategy 2019 – AI for Everyone: People, Industries, Regions and Governments|Japanese Government
-416|AI Ethics Kakao|Kakako Corp
 417|Blockchain & Artificial Intelligence task force|Kenyan Government
 420|Analysis of current global AI developments with a focus on Europe|Konrad-Adenauer-Stiftung
 422|Comparison of National Strategies to Promote Artificial Intelligence - Part 2|Konrad-Adenauer-Stiftung
@@ -593,7 +589,6 @@ doc_id|Name of the document|source
 657|The right to privacy in the digital age|United Nations (OHCHR)
 658|United Nations Development Program - Digital Strategy 2022-2025|United Nations (UNDP)
 660|Towards Responsible Artificial Intelligence Innovation - Second Interpol-UNICRI Report on AI for law enforcement|United Nations (UNICRI), Interpol
-661|Artificial Intelligence and Children's Rights|United Nations Children's Fund (UNICEF)
 662|Policy Guidance on AI for Children|United Nations Children's Fund (UNICEF)
 663|Artificial Intelligence Needs Assessment - Survey In Africa|United Nations Educational Scientific and Cultural Organization (UNESCO)
 664|Artificial intelligence: the promises and the threats|United Nations Educational Scientific and Cultural Organization (UNESCO)
@@ -654,5 +649,6 @@ doc_id|Name of the document|source
 724|Regulatory Technology for the 21st Century|World Economic Forum (WEF), Global Future Council on Agile Governance
 725|Big Data and AI Principles in Engineering|World Federation of Engineering Organizations (WEFO)
 726|Generating evidence for artificial intelligence-based medical devices: A framework for training, validation and evaluation|World Health Organization (WHO)
+727|WHO Guidance: Ethics and governance of artificial intelligence for health|World Health Organization (WHO)
 728|Algorithms and Economic Justice: A Taxonomy of Harms and a Path Forward for the Federal Trade Commission|Yale Law School
 729|Z-Inspection|Z-Inspection
