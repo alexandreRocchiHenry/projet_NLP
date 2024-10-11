@@ -12,6 +12,8 @@ LOG_FILE = "corpus.log"
 OUT_FILE = "corpus.txt"
 log_fp = open(LOG_FILE, "w")
 
+
+
 # Parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--data")
