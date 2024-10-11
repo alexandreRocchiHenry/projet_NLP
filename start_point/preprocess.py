@@ -1,8 +1,7 @@
-import glob
 from tqdm import tqdm
 import numpy as np
 import os
-
+import glob
 import nltk as nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
@@ -12,14 +11,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 corpus = []
 stop_words = set(stopwords.words('english'))
-OUT_FOLDER = "preprocessed/"
+OUT_FOLDER = "../data/preprocessed"
 
 # Create output directory if it does not exist
 if not os.path.exists(OUT_FOLDER):
     os.makedirs(OUT_FOLDER)
 
 print(f'Preprocessing...')
-for i, filename in enumerate(tqdm(glob.glob('txts/*.txt'))):
+for i, filename in enumerate(tqdm(glob.glob('../data/txts/*.txt'))):
     name = filename.split('/')[1].split('.')[0]
     with open(filename) as f:
         lines = f.read().strip()
@@ -28,7 +27,7 @@ for i, filename in enumerate(tqdm(glob.glob('txts/*.txt'))):
         # Remove tokens with length < 3, not a link and not in stop words
         tokens = (' ').join([t.lower() for t in tokens
             if len(t) >= 3 
-            and (t.isalpha() or t in "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
+            and (t.isalpha() or t in r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
             and t.lower() not in stop_words 
             and not "http" in t.lower()
         ])
