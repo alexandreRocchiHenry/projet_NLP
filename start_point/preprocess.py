@@ -5,12 +5,20 @@ import glob
 import nltk as nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+import langid
+import pandas as pd
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
+manifestos_df = pd.read_csv('all_manifestos.csv')
+metadata_df = pd.read_csv('mapaie-metadata.csv')
+
+
+
 corpus = []
 stop_words = set(stopwords.words('english'))
+custom_stop_words = set('')
 OUT_FOLDER = "../data/preprocessed"
 
 # Create output directory if it does not exist
@@ -22,6 +30,7 @@ for i, filename in enumerate(tqdm(glob.glob('../data/txts/*.txt'))):
     name = filename.split('/')[1].split('.')[0]
     with open(filename) as f:
         lines = f.read().strip()
+        
         # Tokenize
         tokens = word_tokenize(lines)
         # Remove tokens with length < 3, not a link and not in stop words

@@ -36,6 +36,7 @@
 38|Taking Stock of Automated Decision-Making in the EU|AlgorithmWatch
 39|AI and Human Rights|All Tech is Human
 40|Artificial Intelligence Act: Analysis & Recommendations|ALLAI
+42|ADP: Ethics in Artificial Intelligence|Always Designing for People
 43|Ethics of AI in Radiology: European and North American Multisociety Statement|American College of Radiology; European Society of Radiology; Radiology Society of North America; Society for Imaging Informatics in Medicine; European Society of Medical Imaging Informatics; Canadian Association of Radiologists; American Association of Physicists in Medicine
 44|Policy Recommendations on Augmented Intelligence in Health Care H-480.940|American Medical Association (AMA)
 45|Defining AMIA's artificial intelligence principles|American Medical Informatics Association (AMIA)
@@ -56,7 +57,6 @@
 61|White Paper - Shaping the Future of Austria with Robotics and Artificial Intelligence|Austrian Council For Robotics And Artificial Intelligence
 62|Governance of Artificial Intelligence in Finance|Autorité de contrôle prudentiel et de résolution (ACPR - France)
 63|Axon committed to listening and learning so that we can fulfill our mission to protect life together|Axon
-64|The Future of Digital Justice|BCG, Bucerius Law School, LegalTech Deutschland
 66|Algo.Rules|Bertelsmann Stiftung, iRights.lab
 67|Ethical issues arising from the police use of live facial recognition technology|Biometrics and Forensics Ethics Group (BFEG)
 68|Artificial Intelligence Economic importance, social challenges, human responsibility|Bitkom
@@ -353,7 +353,6 @@
 377|Ethics policy|Icelandic Institute for Intelligent Machines (IIIM)
 378|AI needs an ethical compass. This tool can help|IDEO
 379|Ethical Design Manifesto|ind.ie
-381|Ethics and Human Rights|India Government
 382|2020 Handbook on AI and International Law|Indian Society of Artificial Intelligence and Law (ISAIL)
 383|Guidance on AI and data protection|Information Commissioner Office
 384|Guidance on the AI auditing framework|Information Commissioner Office
@@ -365,6 +364,7 @@
 392|Draft AI Utilization Principles|Institute for Information and Communications Policy (IICP), The Conference toward AI Network Society
 393|Policy Briefing: Algorithmic Impact Assessments|Institute for the Future of Work
 394|The New Frontier: Artificial intelligence at work|Institute for the Future of Work
+396|Business Ethics and Artificial Intelligence|Institute of Business Ethics
 397|Big Data: New Challenges for Law and Ethics, International scientific conference|Institute of Criminology at the Faculty of Law of Ljubljana
 398|Ethical Aspects of Autonomous and Intelligent Systems|Institute of Electrical and Electronics Engineers (IEEE)
 399|IEEE P7000 Standards Projects|Institute of Electrical and Electronics Engineers (IEEE)
@@ -380,10 +380,270 @@
 410|Global opinion and expectations about AI|Ipsos
 411|Standardization in the area of Artificial Intelligence (ISO/IEC JTC 1/SC 42)|ISO
 412|Strategic Program on Artificiel Intelligence 2022-2024|Italian Government
-414|AI Strategy 2019 – AI for Everyone: People, Industries, Regions and Governments|Japanese Government
-416|AI Ethics Kakao|Kakako Corp
 417|Blockchain & Artificial Intelligence task force|Kenyan Government
-420|Analysis of current global AI developments with a focus on Europe|Konrad-Adenauer-Stiftung
 423|Trust in Artificial Intelligence: A Five Countries Study|KPMG, University of Queensland
 424|How the EU Can Achieve Legally Trustworthy AI: A Response to the European Commission’s Proposal for an Artificial Intelligence Act|KU Leuven, University of Birmingham, University of Edimburgh
 425|Pacte pour une intelligence artificielle égalitaire entre les femmes et les hommes|Laboratoire de l'égalité
+426|Certification of processes for AI|Laboratoire National de métrologie et d'Essai (LNE - France)
+427|Civil Rights Principles for the Era of Big Data|Leadership Conference on Civil and Human Rights
+428|Ethics Framework|Machine Intelligence Garage Ethics Committee
+429|The Ethics of Artifical Intelligence|Machine Intelligence Research Institute
+430|AI Certification Programme|Malta Digital Innovation Authority
+431|Ethical Toolkit for Engineering/Design Practice|Markkula Center
+432|MIT Schwarzman College of Computing Task Force Working Group on Social Implications and Responsibilities of Computing Final Report|Massachusetts Institute of Technology
+433|The State of AI 2022|Mc Kinsey
+434|Facial Recognition Principles|Microsoft
+435|Guidelines for Human-AI Interaction|Microsoft
+436|Joint insurance industry point of view paper: We need rules of the road for responsible AI and data science|Microsoft
+437|Research Collection: Research Supporting Responsible AI|Microsoft
+438|Principles & approaches|Microsoft
+439|Responsible bots: 10 guidelines for developers of conversational AI|Microsoft
+440|The Future Computed – Artificial intelligence and its role in society|Microsoft
+441|Inclusive Design|Microsoft Design
+442|Indonesia National Strategy on AI (Stranas KA)|Minister of Research and Technology of Indonesia
+443|Livre blanc de la sécurité intérieure|Ministère de l'intérieur (France)
+444|Charter of Digital Rights|Ministerio de asuntos economicos y transformacion digital (Spain)
+446|AI Strategy of Ukraine|Ministry of Digital Transformation (Ukraine)
+447|AI Development Policy in Poland|Ministry of Digitisation (Poland)
+448|Assumptions for the AI strategy in Poland Action plan of the Ministry of Digitization - Założenia do strategii AI w Polsce Plan działań Ministerstwa Cyfryzacji|Ministry of Digitisation (Poland)
+449|Dutch digitalisation strategy|Ministry of Economic Affairs and Climate Policy (Netherlands)
+450|Strategic Action Plan for Artificial Intelligence|Ministry of Economic Affairs and Climate Policy (Netherlands)
+456|AI National Strategy|Ministry of economic development (Italy)
+457|Governance Guidelines for Implementation of AI Principles|Ministry of Economy, Trade and Industry (Japan)
+458|Strategy for the Development of AI in the Republic of Serbia for the period of 2020-2025|Ministry of Education, Science and Technological Development (Serbia)
+461|National Strategy for Artificial Intelligence|Ministry of Finance and Ministry of Industry, Business and Financial Affairs (Danemark)
+462|Three-Year Action Plan for Promoting Development of a New Generation Artificial Intelligence Industry|Ministry of Industry and Information Technology (MIIT) (China)
+463|National Artificial Intelligence Strategy of the Czech Republic|Ministry of Industry and Trade of Czech Republic
+464|G20 AI Principles|Ministry of Internal Affairs and Communications
+466|AI National Strategy|Ministry of Local Government and Modernisation (Norway)
+467|Artificial Intelligence National Policy of Chile|Ministry of Science, Technology, Knowledge and Innovation of Chile
+468|For a meaningful Artificial Intelligence. Towards a French and European strategy|Mission Villani
+469|Principles to Promote Fairness, Ethics, Accountability and Transparency (FEAT) in the Use of Artificial Intelligence and Data Analytics in Singapore’s Financial Sector|Monetary Authority of Singapore
+470|The State of AI Ethics (Volume 5, July 2021)|Montreal AI Ethics Institute
+471|The State of AI Ethics (Volume 6, February 2022)|Montreal AI Ethics Institute
+472|Effective Ad Archives|Mozilla Foundation
+473|Data Science Oath|National Academies of Science, Engineering & Medecine
+474|A Proposal for Identifying and Managing Bias in Artificial Intelligence|National Institute of Standards and Technology (NIST) (US)
+475|Artificial Intelligence Risk Management
+ Framework (AI RMF 1.0)|National Institute of Standards and Technology (NIST) (US)
+476|Four Principles of Explainable Artificial
+ Intelligence|National Institute of Standards and Technology (NIST) (US)
+477|Towards a Standard for Identifying and Managing Bias in Artificial Intelligence
+ Managing Bias in Artificial Intelligence|National Institute of Standards and Technology (NIST) (US)
+478|US LEADERSHIP IN AI: A Plan for Federal Engagement in Developing Technical Standards and Related Tools|National Institute of Standards and Technology (NIST) (US)
+479|Discussion Paper: National Strategy for Artificial Intelligence|National Institution for Transforming India (Niti Aayog)
+480|New Generation AI Governance Principles – Developing Responsible AI|National New Generation AI Promotion Office / National New Generation Artificial Intelligence Governance Committee
+482|Advisory Statement on Human Ethics in Artificial Intelligence and Big Data Research|National Research Council Canada
+483|AI Singapore|National Research Foundation (Singapore)
+484|Preparing the future of AI|National Science and Technology Council (US)
+485|The National Artificial Intelligence Research and Development Strategic Plan|National Science and Technology Council, Networking and Information Technology Research and Development Subcommittee (US)
+486|Ensuring American Leadership in Automated Vehicle Technologies - Automated Vehicles 4.0|National Science and Technology Council, United States Department of Transportation (US)
+488|Algorithm Charter for Aotearoa New Zealand|New Zealand Government; Stats NZ
+489|Privacy, Data and Technology: Human Rights Challenges in the Digital Age|New Zealand Human Rights Commission
+490|Declaration on AI in the Nordic-Baltic Region|Nordic Council of Ministers for Digitalisation 2017-2020 (MR-DIGITAL)
+491|The Manifesto for Ethical AI|Numeum
+492|The Practical Guide to Ethical AI|Numeum
+493|Data Ethics Checklist|O'Reilly
+494|Les mesures publiques dans les stratégies gouvernementales en matière d'intelligence artifcielle : une perspective internationale|OBVIA
+495|Principle of Artificial Intelligence Ethics for the intelligence community|Office of the Director of National Intelligence
+497|For a mastered, useful and demystified artificial intelligence - Pour une intelligence artificielle maîtrisée, utile et démystifiée|Office parlementaire d’évaluation des choix scientifiques et technologiques (France)
+498|OP Financial Group’s ethical guidelines for artificial intelligence|OP Group
+499|Open Ethics Manifesto|Open Ethics Initiative
+500|AI Impact assessment|Open Loop
+502|Ethics: a vital part of responsible AI deployment|Orange
+504|International Charter for Inclusive AI|Orange; Arborus
+505|A blueprint for building national compute capacity for artificial intelligence|Organisation for Economic Co-operation and Development (OECD)
+506|Advancing accountability in AI - Governing and managing risks throughout the lifecycle for trustworthy AI|Organisation for Economic Co-operation and Development (OECD)
+507|AI: Intelligent machines, smart policies (Conference Summary)|Organisation for Economic Co-operation and Development (OECD)
+508|Artificial intelligence and employment|Organisation for Economic Co-operation and Development (OECD)
+509|Artificial Intelligence in Society|Organisation for Economic Co-operation and Development (OECD)
+510|Harnessing the power of AI and emerging technologies - Background paper for the CDEP Ministerial meeting|Organisation for Economic Co-operation and Development (OECD)
+511|Identifying and characterising AI adopters - A novel approach based on big data|Organisation for Economic Co-operation and Development (OECD)
+512|Identifying artificial intelligence actors using online data|Organisation for Economic Co-operation and Development (OECD)
+513|Labour-saving technologies and employment levels - Are robots really making workers redundant?|Organisation for Economic Co-operation and Development (OECD)
+514|OECD AI Policy Observatory|Organisation for Economic Co-operation and Development (OECD)
+515|OECD Framework for the classification of AI Systems|Organisation for Economic Co-operation and Development (OECD)
+516|OECD Principles on AI|Organisation for Economic Co-operation and Development (OECD)
+517|Opportunities and drawbacks of using artificial intelligence for training|Organisation for Economic Co-operation and Development (OECD)
+518|Recommendation of the Council on Artificial Intelligence|Organisation for Economic Co-operation and Development (OECD)
+519|State of implementation of the OECD AI Principles|Organisation for Economic Co-operation and Development (OECD)
+520|State of the art in the use of emerging technologies in the public sector|Organisation for Economic Co-operation and Development (OECD)
+521|The supply, demand and characteristics of the AI workforce across OECD countries|Organisation for Economic Co-operation and Development (OECD)
+523|Trustworthy AI in education: promises and challenges. Background paper for the G20 AI Dialogue, Digital Economy Task Force|Organisation for Economic Co-operation and Development (OECD)
+524|Trustworthy AI in health. Background paper for the G20 AI Dialogue, Digital Economy Task Force|Organisation for Economic Co-operation and Development (OECD)
+525|Using artificial intelligence in the workplace: What are the main ethical risks?|Organisation for Economic Co-operation and Development (OECD)
+526|Using artificial intelligence to help combat COVID-19|Organisation for Economic Co-operation and Development (OECD)
+527|Measuring the environmental impacts of artificial intelligence compute and applications - The AI Footprint|Organisation for Economic Co-operation and Development (OECD), GPAI
+528|Non-paper on the impact of artificial intelligence and freedom of expression|Organization for Security and Co-operation in Europe (OSCE)
+529|From What to How: An Initial Review of Publicly Available AI Ethics Tools, Methods and Research to Translate Principles into Practices|Oxford Internet Institute
+530|Prolegomena to a White Paper on an Ethical Framework for a Good AI Society|Oxford Internet Institute
+532|Action Plan of the Federal Government on the Report of the Ethics Committee Automated and Networked Driving (Ethics Rules for Driving Computers) - Maßnahmenplan der Bundesregierung zum Bericht der Ethik-Kommission Automatisiertes und Vernetztes Fahren (Ethik-Regeln für Fahrcomputer)|Parliament (Germany)
+533|Future Technology Artificial Intelligence as a Success Factor for a Strong and Innovative Europe - A Statement on the EU Commission's White Paper on AI (German)|Parliament (Germany)
+538|Tenets|Partnership on AI
+539|A Proposed Model Artificial Intelligence Governance Framework|Personal Data Commission Singapore
+540|Discussion Paper on Artificial Intelligence (AI) and Personal Data - Fostering Responsible Development and Adoption of AI|Personal Data Protection Commission Singapore
+541|Singapore’s Approach to AI Governance|Personal Data Protection Commission Singapore
+542|Pervasive Data Ethics|Pervade at University of Maryland
+543|Five guiding principles for responsible use of AI in healthcare and healthy living|Philips
+544|Ten simple rules for responsible Big Data research|PLOS Computational Biology
+545|Traffic law amended with definition of an autonomous vehicle.|Poland
+549|Ethical Framework for Artificial Intelligence in Colombia|Presidential advisory for economic affairs and digital transformation (Colombia)
+551|A practical guide to Responsible Artificial Intelligence (AI)|PriceWaterhouseCoopers (PWC)
+552|PWC's Responsible AI|PriceWaterhouseCoopers (PWC)
+553|Responsible AI – Maturing from theory to practice|PriceWaterhouseCoopers (PWC)
+554|The responsible AI framework|PriceWaterhouseCoopers (PwC) UK
+555|Plans to develop a National Artificial Intelligence Framework|Prime Minister of Malaysia
+556|Annual Reports - Data Ethics|Privacy Commissioner for Personal Data (Hong Kong)
+557|Privacy and Freedom of Expression In the Age of Artificial Intelligence|Privacy International & Article 19
+558|QCRI Center for Artificial Intelligence|Qatar Computing Research Institute (QCRI)
+559|Auditing and Achieving Intersectional Fairness in Classification Problems|QuantumBlack (McKinsey)
+560|Summary of events - AI Policy Conference|RegHorizon, ETH Zurich
+561|Rome Call for AI Ethics|RenAIssance Foundation
+562|Užupis Principles for Trustworthy AI Design|Republic of Užupis
+563|Principles|reputable.AI
+564|Harmonious Artificial Intelligence Principles|Research Center for Brain-inspired Intelligence, Institute of Automation, Chinese Academy of Sciences
+565|Linking artifical intelligence principles|Research Center for Brain-inspired Intelligence, Institute of Automation, Chinese Academy of Sciences
+567|Responsible Design Assistant|Responsible AI institute
+568|RANZCR Ethical Principles for AI in Medicine - Consultation|Royal Australian and New Zealand College of Radiologists
+569|Artificial Intelligence (AI) in Health|Royal College of Physicians
+571|Trusted AI  |Salesforce research
+572|Artificial Intelligence|Samsung Research
+574|Shanghai Declaration|Shanghai YoungAI
+575|Smart Dubai AI Ethics Principles & Guidelines|Smart Dubai
+576|Ethical Principles for Artificial Intelligence and Data Analytics|Software & Information Industry Association (SIIA), Public Policy Division
+577|Shanghai Initiative on Artificial Intelligence Security Development|Sohu
+579|National Strategy on AI|Spain
+580|Statute book of good practices in data protection for Big Data - Código de buenas prácticas en protección de datos para proyectos de Big Data|Spanish Agency for Data Protection (AEPD - Spain)
+581|Dutch Artificial Intelligence Manifesto|Special Interest Group on Artificial Intelligence (SIGAI), ICT Platform Netherlands (IPN)
+582|White Paper on AI standardization|Standards Admin of China
+583|An Artificial Intelligence Standards Roadmap: Making Australia’s Voice Heard|Standards Australia
+584|Government by Algorithm: Artificial Intelligence in Federal Administrative Agencies|Stanford Law School
+585|Introducing Stanford's Human-Centered AI Initiative|Stanford University Human-Centered Artificial Intelligence
+586|Next Generation Artifical Intelligence Plan|State Council (China)
+587|Principles for the safe and effective use of data and analytics|Stats New Zealand and Office of the Privacy Commissioner
+589|Artificial intelligence in Swedish business and society|Sweden’s innovation agency (Vinnova)
+590|Recommendations for an AI Strategy in Switzerland|Swiss Academy of Technical Sciences (SATW)
+591|Ethical Codex for Data-Based Value Creation: For Public Consultation|Swiss Alliance for Data-Intensive Services
+592|The future of work and education in the digital age|T20
+593|RFI for AI Services|TBS Canada
+594|Critiquing the Reasons for Making Artificial Moral Agents|Technical University of Delft
+595|Business Principles and Policies|Telefonica
+596|AI Principles of Telefónica|Telefonica Executive Committee
+597|Guiding Principles on Trusted AI Ethics|Telia Company
+598|6 Principles of AI|Tencent
+599|“ARCC”: An Ethical Framework for Artificial Intelligence|Tencent Research Institute
+600|The Ethics of Technology in the Intelligent Age - Reshaping Trust in a Digital Society|Tencent Technology News, Tencent Research Institute, Tencent AI Lab
+601|Artificial Intelligence and National Security|Thales
+602|Designing an ethical, socially accountable facial recognition system A vision from Thales|Thales
+603|TrUE AI|Thales
+604|Human Rights, Democracy, and the Rule of Law Assurance Framework for AI Systems: A proposal prepared for the Council of Europe’s Ad hoc Committee on Artificial Intelligence|The Alan Turing Institute
+605|Understanding Artificial Intelligence and Safety - A guide for the responsible design and implementation of AI systems in the public sector|The Alan Turing Institute
+606|AI, human rights, democracy and the rule of law: A primer prepared for the Council of Europe|The Alan Turing Institute, Council of Europe
+607|The Critical Engineering Manifesto|The Critical Engineering Working Group
+608|Human rights impact assessment of digital activities|The Danish Institute for Human Rights
+609|Ethical by Design: Principles for Good Technology|The Ethics Center
+610|The EURON Roboethics Roadmap|The European Robotics Research Network (EURON)
+611|Principles for the Governance of AI|The Future Society Science Law and Society (SLS) Initiative
+612|Big Data and Health - Data sovereignty as informational freedom design - Big Data und Gesundheit – Datensouveränität als informationelle Freiheitsgestaltung|The German Ethics Council
+613|The Good Technology Standard (Draft)|The Good Technology Collective
+614|Artificial Intelligence: a strategic vision for Luxembourg|The Government of the Grand Duchy of Luxembourg
+615|Position on Robotics and Artificial Intelligence|The Greens (Green Working Group Robots)
+617|A Framework for the Ethical use of advanced Data Science Methodes in the Humanitarian Sector|The Humanitarian Data Science and Ethics Group
+618|Unified Ethical Frame for Big Data Analysis. IAF Big Data Ethics Initiative, Part A|The Information Accountability Foundation
+619|The Ethical Framework
+ for AI in Education|The Insitute for Ethical AI in Education
+620|The responsible Machine Learning Principles|The Institute for Ethical AI & Machine Learning
+621|AI RFX Procurement Framework|The Institute for Ethical AI & ML
+622|Artificial Intelligence and Machine Learning: Policy Paper|The Internet Society
+623|Regulation of Artificial Intelligence in Selected Jurisdictions|The Law Library of the Congress
+624|Civil Rights Principles for the Era of Big Data|The Leadership Conference on Civil and Human Rights
+625|Manifesto for Data Practices|The Linux Foundation
+626|AI in Egypt|The National Council for Artificial Intelligence (Egypt)
+627|Big Data and Security Policies: Serving Security, Protecting Freedom|The Netherlands Scientific Council for Government Policy
+629|Artificial intelligence and privacy|The Norwegian Data Protection Authority
+630|Data Ethics Canvas|The Open Data Institute
+632|Universal Guidelines for Artificial Intelligence|The Public Voice
+633|Human Rights in the Robot Age Report|The Rathenau Institute
+634|Human rights in the robot age Challenges arising from the use of robotics, artificial intelligence, and virtual and augmented reality|The Rathenau Instituut
+635|Machine learning: the power and promise of computers that learn by example|The Royal Society
+636|Saudi Arabia National AI Strategy|The Saudi Data and Artificial Intelligence Authority
+637|Bridges to the future of education: Policy recommendations for the digital age|Think 20 (T20)
+638|The 3rd Insdustrial Revolution Strategy Study|Third Industrial Revolution Consulting Group (Luxembourg)
+639|Ethical by Design: Ethics Best Practices for Natural Language Processing|Thomson Reuters
+640|Tieto’s AI ethics guidelines|Tieto
+641|Policy brief on Discrimination at Recruitment and Selection|TNO (Netherlands)
+642|Algorithmic Impact Assessment (AIA)|Treasury Board (Canada)
+643|Directive on Automated Decision-Making|Treasury Board (Canada)
+644|Government of Canada Strategic Plan for Information Management and Information Technology 2017-2021|Treasury Board (Canada)
+645|Responsible use of Artificial Intelligence (AI) - Guiding Principles|Treasury Board (Canada)
+646|Vienna Manifesto on Digital Humanism|TU Wien
+647|National AI Strategy: Unlocking Tunisia’s capabilities potential.|Tunisia’s Secretary of State for Research
+649|A guide to good practice for digital and data-driven health technologies|UK Department of Health & Social Care
+651|Ambitious, safe, responsible: our approach to the delivery of AI-enabled capability in Defence|UK Ministry of Defence
+653|UAE Strategy for AI|United Arab Emirates Government
+654|The practical application of the Guiding Principles on Business and Human Rights to the activities of technology companies - Report of the Office of the United Nations High Commissioner for Human Rights|United Nations (Human Rights Council)
+655|United Nations Activities on Artificial Intelligence (AI) 2021|United Nations (ITU)
+657|The right to privacy in the digital age|United Nations (OHCHR)
+658|United Nations Development Program - Digital Strategy 2022-2025|United Nations (UNDP)
+660|Towards Responsible Artificial Intelligence Innovation - Second Interpol-UNICRI Report on AI for law enforcement|United Nations (UNICRI), Interpol
+662|Policy Guidance on AI for Children|United Nations Children's Fund (UNICEF)
+663|Artificial Intelligence Needs Assessment - Survey In Africa|United Nations Educational Scientific and Cultural Organization (UNESCO)
+664|Artificial intelligence: the promises and the threats|United Nations Educational Scientific and Cultural Organization (UNESCO)
+665|Beijing Consensus on Artificial Intelligence and Education|United Nations Educational Scientific and Cultural Organization (UNESCO)
+666|COMEST Report on Robotics|United Nations Educational Scientific and Cultural Organization (UNESCO)
+668|Draft text of the Recommendation on the ethics of artificial intelligence|United Nations Educational Scientific and Cultural Organization (UNESCO)
+669|I'd blush if I could|United Nations Educational Scientific and Cultural Organization (UNESCO)
+671|Preliminary study on the Ethics of Artificial Intelligence|United Nations Educational Scientific and Cultural Organization (UNESCO)
+672|Preliminary study on the technical and legal aspects relating to the desirability of a standard-setting instrument on the ethics of artificial intelligence|United Nations Educational Scientific and Cultural Organization (UNESCO)
+673|Recommendation on the Ethics of Artificial Intelligence|United Nations Educational Scientific and Cultural Organization (UNESCO)
+674|Report on Big Data and Health|United Nations Educational Scientific and Cultural Organization (UNESCO)
+675|Steering AI and Advanced ICTs for Knowledge Societies: A Rights, Openness, Access, and Multi-Stakeholder Perspective|United Nations Educational Scientific and Cultural Organization (UNESCO)
+676|Toward a draft text of a Recommendation on the Ethics of Artificial Intelligence (working document)|United Nations Educational Scientific and Cultural Organization (UNESCO)
+677|The Effects of AI on the Working Lives of Women|United Nations Educational Scientific and Cultural Organization (UNESCO), Organisation for Economic Co-operation and Development (OECD), Inter-American Development Bank (IDB)
+678|Report of the Special Rapporteur to the General Assembly on AI and its impact on freedom of opinion and expression|United Nations, Secretary General
+679|Action Plan for a Sustainable Planet in the Digital Age|United Nations, Secretary General's Envoy on Technology
+680|Report on The Age of Digital Interdependence|United Nations, UN Secretary-General’s High-level Panel on Digital Cooperation
+681|Introducing Unity’s Guiding Principles for Ethical AI – Unity Blog|Unity Technologies
+682|L'intelligence artificielle dans l'administration publique au Québec|Université de Laval
+683|Montréal Declaration for a Responsible Development of Artificial Intelligence|Université de Montréal
+684|A smart bureaucrat's guide to AI regulation|University of Bath
+685|Study on AI Governance by Human Rights-Centred Design, Deliberation and Oversight|University of Birmingham
+686|Developing a Shared Vision of Ethical AI in Education: An Invitation to Participate|University of Buckingham
+687|Artificial Intelligence as a Service: Legal Responsibilities, Liabilities, and Policy Challenges|University of Cambridge
+688|Design Ethically Toolkit|University of Cambridge
+689|Ethics of Artificial Intelligence: Case Studies and Options for Addressing Ethical Challenges|University of Central Lancashire, University of Nottingham, University De Monfort
+690|Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead|University of Duke
+691|The ethical issues of the application of artificial intelligence
+ in healthcare: a systematic scoping review|University of Maastricht
+692|Pervade project: Pervasive Data Ethics for computanional research|University of Maryland
+693|A Code of Ethics for the Human Robot Interaction|University of Notre Dame
+697|Input on the European Commission White Paper “On Artificial Intelligence – A European approach to excellence and trust”|University of Stanford
+698|AI Index 2018|University of Stanford, SRI International, MIT, OpenAI, McKinsey Global Institute, Partnership on AI, Harvard University
+699|AI Index 2019|University of Stanford, SRI International, MIT, OpenAI, McKinsey Global Institute, Partnership on AI, Harvard University
+700|AI Index 2021|University of Stanford, SRI International, MIT, OpenAI, McKinsey Global Institute, Partnership on AI, Harvard University
+701|AI Index 2022|University of Stanford, SRI International, MIT, OpenAI, McKinsey Global Institute, Partnership on AI, Harvard University
+702|Recommendations on Updating the National Artificial Intelligence Research and Development Strategic Plan|University of Stanford, Stanford Institute for Human-centered AI
+703|The Ethics of AI Ethics - An Evaluation of Guidelines|University of Tübingen
+704|Algorithms and fundamental rights - Algoritmes en grondrechten|University of Utrecht
+705|Data Ethics Decision Aid (DEDA)|University of Utrecht, University of Duisburg
+706|AI UX: 7 principles of designing Good AI Products|UX Studio Team
+707|Künstliche Intelligenz – Gemeinwohl als Maßstabm Gute Arbeit als Prinzip|Ver.di
+708|Verivox/Pro7 Selbstverpflichtung (Commitment)|Verivox
+709|Vodafone AI Framework|Vodafone Group
+710|Global competition and convergence of AI Law|Vrije Universiteit Brussel
+711|Artificial Intelligence: open questions about gender inclusion|W20
+712|Digitalwallonia4AI|Walloon Government (Belgium)
+713|White Paper: How to Prevent Discriminatory Outcomes in Machine Learning|WEF, Global Future Council on Human Rights 2016-2018
+715|Guidance for Regulation of Artificial Intelligence Applications|White House (US)
+716|Principles for Responsible AI|Women leading in AI
+719|Artificial Intelligence for Children - Toolkit|World Economic Forum (WEF)
+720|Guidelines for AI procurement|World Economic Forum (WEF)
+721|How to prevent Discriminatory Outcomes in Machine Learning|World Economic Forum (WEF)
+722|White paper: A Framework for Responsible Limits on Facial Recognition Use Case: Flow Management|World Economic Forum (WEF)
+723|Ethics by Design: An organizational approach to responsible use of technology|World Economic Forum (WEF), Deloitte and the Markkula Center for Applied Ethics at Santa Clara University
+724|Regulatory Technology for the 21st Century|World Economic Forum (WEF), Global Future Council on Agile Governance
+725|Big Data and AI Principles in Engineering|World Federation of Engineering Organizations (WEFO)
+726|Generating evidence for artificial intelligence-based medical devices: A framework for training, validation and evaluation|World Health Organization (WHO)
+727|WHO Guidance: Ethics and governance of artificial intelligence for health|World Health Organization (WHO)
+728|Algorithms and Economic Justice: A Taxonomy of Harms and a Path Forward for the Federal Trade Commission|Yale Law School
+729|Z-Inspection|Z-Inspection
