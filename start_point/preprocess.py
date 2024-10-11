@@ -19,7 +19,7 @@ if not os.path.exists(OUT_FOLDER):
     os.makedirs(OUT_FOLDER)
 
 print(f'Preprocessing...')
-for i, filename in enumerate(tqdm(glob.glob('txts/*.txt'))):
+for i, filename in enumerate(tqdm(glob.glob('../data/txts/*.txt'))):
     name = filename.split('/')[1].split('.')[0]
     with open(filename) as f:
         lines = f.read().strip()
