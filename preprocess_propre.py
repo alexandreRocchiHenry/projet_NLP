@@ -6,6 +6,7 @@ from nltk.corpus import stopwords
 import langid
 import pandas as pd
 import re
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
@@ -60,4 +61,15 @@ tfidf_vectorizer = TfidfVectorizer()
 tfidf_matrix = tfidf_vectorizer.fit_transform(metadata_df['text_processed'])
 metadata_df['tfidf'] = list(tfidf_matrix.toarray())
 
+
+#Preprocess sur les Institutions (= nos labels)
+
+metadata_df["Institution"] = metadata_df['Institution'].replace('.',np.nan) 
+metadata_df['Institution'] = metadata_df['Institution'].str.replace('.', '', regex=False).str.replace('?', '', regex=False)
+metadata_df['Institution'] = metadata_df['Institution'].str.split(',').str[0].str.strip()
+metadata_df['Institution'] = metadata_df['Institution'].str.split(';').str[0].str.strip()
+
+
 metadata_df.to_csv('data_preprocessed.csv', index=False)
+
+
