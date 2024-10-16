@@ -68,7 +68,7 @@ metadata_df["Institution"] = metadata_df['Institution'].replace('.',np.nan)
 metadata_df['Institution'] = metadata_df['Institution'].str.replace('.', '', regex=False).str.replace('?', '', regex=False)
 metadata_df['Institution'] = metadata_df['Institution'].str.split(',').str[0].str.strip()
 metadata_df['Institution'] = metadata_df['Institution'].str.split(';').str[0].str.strip()
-
+metadata_df = metadata_df.dropna(subset=['Institution'])
 
 metadata_df.to_csv('data_preprocessed.csv', index=False)
 
