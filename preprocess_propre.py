@@ -132,11 +132,6 @@ categories = {
 }
 
 
-
-
-
-
-# Fonction pour trouver la catégorie d'une organisation en fonction des mots-clés
 def categorize_organization(org):
     org = org.strip().lower()
     for category, keywords in categories.items():
@@ -145,7 +140,6 @@ def categorize_organization(org):
             return category
     return "Autres"
 
-# Appliquer la fonction sur la colonne 'organization' et créer une nouvelle colonne 'category'
 metadata_df['categorie Institution'] = metadata_df['Institution'].apply(categorize_organization)
 
 
