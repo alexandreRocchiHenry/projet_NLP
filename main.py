@@ -9,6 +9,8 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
 import altair as alt
 
+from sklearn.decomposition import PCA
+
 from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import AgglomerativeClustering
 
@@ -32,8 +34,8 @@ def tsne(embeddings):
     return docs_tsne
 
 def pca(embeddings):
-    svd = TruncatedSVD(n_components=2)
-    embeddings_pca = svd.fit_transform(embeddings)
+    pca = PCA(n_components=2)
+    embeddings_pca = pca.fit_transform(embeddings)
     return embeddings_pca
 
 # Clusterings functions
@@ -81,7 +83,24 @@ def display_ca(embeddings, df, labels):
     chart.show()
     
 
-    
+def display_pca(embeddings, df, labels):
+    embeddings_pca = pca(embeddings)
+    data_pca = pd.DataFrame({'x': embeddings_pca[:, 0],
+                            'y': embeddings_pca[:, 1],
+                            'institution': df['categorie Institution'],
+                            'title': df["Name of the document"],
+                            'labels': df["categorie Institution"]
+                            })
+    alt.data_transformers.disable_max_rows()
+    chart = alt.Chart(data_pca).mark_circle(size=200).encode(
+        x="x", y="y", color=alt.Color('labels:N', scale=alt.Scale(scheme='category20')),
+        tooltip=['institution', "title"]
+        ).interactive().properties(
+        width=500,
+        height=500
+    )
+    chart.save('chart.html')
+    chart.show()   
 
 def display_tsne(embeddings, df, labels):
     docs_tsne_th = TSNE(n_components=2, learning_rate='auto',
