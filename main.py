@@ -9,15 +9,20 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
 import altair as alt
 
+from nltk.tokenize import word_tokenize
+
 from sklearn.decomposition import PCA
 
 from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import AgglomerativeClustering
 
+import gensim.downloader as api
+import nltk
 
+nltk.download('punkt')
 
 # Preprocessed dataframe
-data_proprocessed = "data_preprocessed.csv"
+data_proprocessed = "Data_csv/data_preprocessed.csv"
 data_df = pd.read_csv(data_proprocessed)
 
 # Embeddings functions
@@ -26,6 +31,27 @@ def tfidf(df):
     Tfidf = tfidf_vectorizer.fit_transform(df['text_processed'])
     tfidf_a = Tfidf.toarray()
     return tfidf_a
+
+
+
+def get_embedding(word, model):
+    try:
+        return model[word]
+    except KeyError:
+        return np.zeros(100)  
+
+
+
+def text_embedding(text, model):
+    words = word_tokenize(text)  # Tokenise tout en gérant la ponctuation
+    return np.mean([get_embedding(word, model) for word in words], axis=0)
+    
+def glove_embedding(df):
+    nltk.download('punkt') 
+    glove_model = api.load('glove-wiki-gigaword-300')  
+    embedding_glove = df['text'].apply(lambda x: text_embedding(x, glove_model))
+    return glove_embedding
+
 
 # Dimension reduction functions
 def tsne(embeddings):
@@ -140,5 +166,5 @@ def pipeline(dataframe, embedding_method, clustering_method, taille_cluster, red
     reduction_method(embeddings, dataframe, labels)
     return scores
 
-pipeline(dataframe=data_df, embedding_method=tfidf, clustering_method=Kmeans_fct, taille_cluster=[10,11], reduction_method=display_tsne)
+pipeline(dataframe=data_df, embedding_method=glove_embedding, clustering_method=Kmeans_fct, taille_cluster=[10,11], reduction_method=display_tsne)
 
