@@ -20,15 +20,6 @@ def tfidf(df):
     return tfidf_a
 
 
-def correspondence_analysis(embeddings, n_components=2):
-    svd = TruncatedSVD(n_components=n_components)
-    embeddings_ca = svd.fit_transform(embeddings)
-    return embeddings_ca
-
-def hierarchical_clustering(n_clusters, embeddings):
-    hc = AgglomerativeClustering(n_clusters=n_clusters, metric='euclidean', linkage='ward')
-    labels = hc.fit_predict(embeddings)
-    return labels
 
 
 def score_function(embeddings, labels):
