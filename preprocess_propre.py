@@ -8,9 +8,10 @@ import pandas as pd
 import re
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
+import ujson as json
 
 
-metadata_df = pd.read_csv('metadata.csv')
+metadata_df = pd.read_csv('Data_csv/metadata.csv')
 
 list_file = sorted(glob.glob('data/txts/*.txt'), key=lambda x: int(os.path.basename(x).split('.')[0]))
 
@@ -142,9 +143,26 @@ def categorize_organization(org):
 
 metadata_df['categorie Institution'] = metadata_df['Institution'].apply(categorize_organization)
 
+# Charger le fichier JSON contenant les mots-clés des thèmes
+with open('start_point/themes.json', 'r') as f:
+    keywords = json.load(f)
+
+# Fonction pour attribuer des thèmes en fonction des mots-clés
+def assign_themes(text, keywords):
+    themes_found = []
+    text_lower = text.lower()
+    
+    for theme, kw_list in keywords.items():
+        if any(kw.lower() in text_lower for kw in kw_list):
+            themes_found.append(theme)
+    
+    return ', '.join(themes_found) if themes_found else 'Aucun thème'
+
+# Ajouter une nouvelle colonne 'thèmes' avec les thèmes détectés
+metadata_df['themes'] = metadata_df['text_processed'].apply(lambda text: assign_themes(text, keywords))
 
 
 
-metadata_df.to_csv('data_preprocessed.csv', index=False)
+metadata_df.to_csv('Data_csv/data_preprocessed.csv', index=False)
 
 
