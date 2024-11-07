@@ -45,8 +45,14 @@ def get_embedding(word, model):
 
 
 def text_embedding(text, model):
-    words = word_tokenize(text)  # Tokenise tout en gérant la ponctuation
-    return np.mean([get_embedding(word, model) for word in words], axis=0)
+    words = text.split()  # Sépare le texte en mots
+    embeddings = [get_embedding(word, model) for word in words]
+    
+    # Vérifie s'il y a au moins un vecteur valide (différent d'un vecteur de zéros)
+    if len(embeddings) > 0:
+        return np.mean(embeddings, axis=0)  # Renvoie la moyenne des vecteurs
+    else:
+        return np.zeros(100)
     
 # def glove_embedding(df):
 #     nltk.download('punkt') 
