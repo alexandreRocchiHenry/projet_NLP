@@ -56,7 +56,7 @@ def glove_embedding(df):
     nltk.download('punkt') 
     glove_model = api.load('glove-wiki-gigaword-300')  
     embedding_glove = df['text'].apply(lambda x: text_embedding(x, glove_model))
-    return glove_embedding
+    return embedding_glove
 
 
 # Dimension reduction functions
