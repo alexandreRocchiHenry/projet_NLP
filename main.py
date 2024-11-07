@@ -217,5 +217,9 @@ def pipeline(dataframe, embedding_method, clustering_method, taille_cluster, red
     reduction_method(embeddings, dataframe, labels)
     return scores
 
-pipeline(dataframe=data_df, embedding_method=roberta_embeddings, clustering_method=Kmeans_fct, taille_cluster=[10,11], reduction_method=display_tsne)
+pipeline(dataframe=data_df, 
+        embedding_method=roberta_embeddings,
+        clustering_method=Kmeans_fct, 
+        taille_cluster=[10,11], 
+        reduction_method=display_tsne)
 
