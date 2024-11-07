@@ -21,8 +21,6 @@ import nltk
 
 nltk.download('punkt')
 
-loaded_glove_model = api.load("glove-wiki-gigaword-300")
-
 # Preprocessed dataframe
 data_proprocessed = "Data_csv/data_preprocessed.csv"
 data_df = pd.read_csv(data_proprocessed)
@@ -61,6 +59,7 @@ def text_embedding(text, model):
 #     return glove_embedding
 
 def glove_embeddings(df):
+    loaded_glove_model = api.load("glove-wiki-gigaword-300")
     all_embeddings = []
     for text in df['text_processed']:
         word_vectors = []
@@ -189,5 +188,5 @@ def pipeline(dataframe, embedding_method, clustering_method, taille_cluster, red
     reduction_method(embeddings, dataframe, labels)
     return scores
 
-pipeline(dataframe=data_df, embedding_method=glove_embedding, clustering_method=Kmeans_fct, taille_cluster=[10,11], reduction_method=display_tsne)
+pipeline(dataframe=data_df, embedding_method=glove_embeddings, clustering_method=Kmeans_fct, taille_cluster=[10,11], reduction_method=display_tsne)
 
