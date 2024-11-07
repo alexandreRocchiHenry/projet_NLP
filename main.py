@@ -21,6 +21,8 @@ import nltk
 
 nltk.download('punkt')
 
+loaded_glove_model = api.load("glove-wiki-gigaword-300")
+
 # Preprocessed dataframe
 data_proprocessed = "Data_csv/data_preprocessed.csv"
 data_df = pd.read_csv(data_proprocessed)
@@ -46,11 +48,26 @@ def text_embedding(text, model):
     words = word_tokenize(text)  # Tokenise tout en gérant la ponctuation
     return np.mean([get_embedding(word, model) for word in words], axis=0)
     
-def glove_embedding(df):
-    nltk.download('punkt') 
-    glove_model = api.load('glove-wiki-gigaword-300')  
-    embedding_glove = df['text'].apply(lambda x: text_embedding(x, glove_model))
-    return glove_embedding
+# def glove_embedding(df):
+#     nltk.download('punkt') 
+#     glove_model = api.load('glove-wiki-gigaword-300')  
+#     embedding_glove = df['text'].apply(lambda x: text_embedding(x, glove_model))
+#     return glove_embedding
+
+def glove_embeddings(df):
+    all_embeddings = []
+    for text in df['text_processed']:
+        word_vectors = []
+        for word in text.split():
+            if word in loaded_glove_model:
+                word_vectors.append(loaded_glove_model[word])
+        if word_vectors:
+            sentence_embedding = np.mean(word_vectors, axis=0)
+        else:
+            sentence_embedding = np.zeros(loaded_glove_model.vector_size)
+        all_embeddings.append(sentence_embedding)
+        all_embeddings_a = np.array(all_embeddings)
+    return all_embeddings_a
 
 
 # Dimension reduction functions
