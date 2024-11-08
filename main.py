@@ -195,7 +195,7 @@ def display_tsne(embeddings, df, labels):
     alt.data_transformers.disable_max_rows()
     chart = alt.Chart(data_th[:]).mark_circle(size=200).encode(
         x="x", y="y", color=alt.Color('labels:N', 
-                                      scale=alt.Scale(scheme='category20')),
+                                    scale=alt.Scale(scheme='category20')),
         tooltip=['institution', "title"]
         ).interactive().properties(
         width=500,
@@ -223,4 +223,3 @@ pipeline(dataframe=data_df,
         clustering_method=hierarchical_clustering, 
         taille_cluster=[10,11], 
         reduction_method=display_tsne)
-
