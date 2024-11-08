@@ -18,6 +18,8 @@ from sklearn.cluster import AgglomerativeClustering
 
 import gensim.downloader as api
 import nltk
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.mixture import GaussianMixture
 
 nltk.download('punkt')
 
@@ -87,22 +89,27 @@ def pca(embeddings):
     return embeddings_pca
 
 # Clusterings functions
-def Kmeans_fct(n, embeddings):
-    kmeans = KMeans(n_clusters=n, random_state=0)
+def Kmeans_fct(n_clusters, embeddings):
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0)
     kmeans.fit(embeddings)
     labels = kmeans.labels_
     return labels
 
-
-def correspondence_analysis(embeddings, n_components=2):
-    svd = TruncatedSVD(n_components=n_components)
-    embeddings_ca = svd.fit_transform(embeddings)
-    return embeddings_ca
+def gaussian_clusterings(n_clusters, embeddings):
+    gmm = GaussianMixture(n_components=n_clusters, random_state=0)
+    gmm.fit(embeddings)
+    labels = gmm.predict(embeddings)
+    return labels
 
 def hierarchical_clustering(n_clusters, embeddings):
     hc = AgglomerativeClustering(n_clusters=n_clusters, metric='euclidean', linkage='ward')
     labels = hc.fit_predict(embeddings)
     return labels
+
+def correspondence_analysis(embeddings, n_components=2):
+    svd = TruncatedSVD(n_components=n_components)
+    embeddings_ca = svd.fit_transform(embeddings)
+    return embeddings_ca
 
 # Validation function
 def score_function(embeddings, labels):
