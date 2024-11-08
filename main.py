@@ -20,6 +20,11 @@ import gensim.downloader as api
 import nltk
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.mixture import GaussianMixture
+import torch
+from transformers import AutoTokenizer, AutoModel,AutoModelForSequenceClassification
+from sentence_transformers import SentenceTransformer
+
+from transformers import RobertaModel, RobertaTokenizer
 
 nltk.download('punkt')
 
@@ -44,21 +49,21 @@ def get_embedding(word, model):
 
 
 
-def text_embedding(text, model):
-    words = text.split()  # Sépare le texte en mots
-    embeddings = [get_embedding(word, model) for word in words]
+# def text_embedding(text, model):
+#     words = text.split()  # Sépare le texte en mots
+#     embeddings = [get_embedding(word, model) for word in words]
     
-    # Vérifie s'il y a au moins un vecteur valide (différent d'un vecteur de zéros)
-    if len(embeddings) > 0:
-        return np.mean(embeddings, axis=0)  # Renvoie la moyenne des vecteurs
-    else:
-        return np.zeros(100)
+#     # Vérifie s'il y a au moins un vecteur valide (différent d'un vecteur de zéros)
+#     if len(embeddings) > 0:
+#         return np.mean(embeddings, axis=0)  # Renvoie la moyenne des vecteurs
+#     else:
+#         return np.zeros(100)
     
-# def glove_embedding(df):
-#     nltk.download('punkt') 
-#     glove_model = api.load('glove-wiki-gigaword-300')  
-#     embedding_glove = df['text'].apply(lambda x: text_embedding(x, glove_model))
-#     return glove_embedding
+# # def glove_embedding(df):
+# #     nltk.download('punkt') 
+# #     glove_model = api.load('glove-wiki-gigaword-300')  
+# #     embedding_glove = df['text'].apply(lambda x: text_embedding(x, glove_model))
+# #     return glove_embedding
 
 def glove_embeddings(df):
     loaded_glove_model = api.load("glove-wiki-gigaword-300")
@@ -75,6 +80,30 @@ def glove_embeddings(df):
         all_embeddings.append(sentence_embedding)
         all_embeddings_a = np.array(all_embeddings)
     return all_embeddings_a
+
+def roberta_embeddings(df):
+    tokenizer = RobertaTokenizer.from_pretrained('roberta-large')
+    model = RobertaModel.from_pretrained('roberta-large')
+    model.eval()
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
+    embeddings = []
+    for text in df['text_processed']:
+        inputs = tokenizer(text, return_tensors='pt', truncation=True, max_length=512)
+        inputs = {key: val.to(device) for key, val in inputs.items()}
+        with torch.no_grad():
+            outputs = model(**inputs)
+        embedding = outputs.last_hidden_state.mean(dim=1).squeeze().cpu().numpy()
+        embeddings.append(embedding)
+    embeddings_array = np.array(embeddings)
+    return embeddings_array
+
+
+def sentence_transformer_embeddings(df):
+    model_name='roberta-base-nli-stsb-mean-tokens'
+    model = SentenceTransformer(model_name)
+    embeddings = model.encode(df['text_processed'].tolist(), show_progress_bar=True)
+    return embeddings
 
 
 # Dimension reduction functions
@@ -167,12 +196,13 @@ def display_tsne(embeddings, df, labels):
                             'y': docs_tsne_th[:,1],
                             'institution': df['categorie Institution'],
                             'title': df["Name of the document"],
-                            'labels': df["categorie Institution"]
+                            #'labels': df["categorie Institution"]
+                            'labels': df["theme"]
                             })
     alt.data_transformers.disable_max_rows()
     chart = alt.Chart(data_th[:]).mark_circle(size=200).encode(
         x="x", y="y", color=alt.Color('labels:N', 
-                                      scale=alt.Scale(scheme='category20')),
+                                    scale=alt.Scale(scheme='category20')),
         tooltip=['institution', "title"]
         ).interactive().properties(
         width=500,
@@ -195,5 +225,8 @@ def pipeline(dataframe, embedding_method, clustering_method, taille_cluster, red
     reduction_method(embeddings, dataframe, labels)
     return scores
 
-pipeline(dataframe=data_df, embedding_method=glove_embeddings, clustering_method=Kmeans_fct, taille_cluster=[10,11], reduction_method=display_tsne)
-
+pipeline(dataframe=data_df, 
+        embedding_method=roberta_embeddings,
+        clustering_method=hierarchical_clustering, 
+        taille_cluster=[10,11], 
+        reduction_method=display_tsne)
