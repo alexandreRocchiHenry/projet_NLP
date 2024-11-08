@@ -189,7 +189,8 @@ def display_tsne(embeddings, df, labels):
                             'y': docs_tsne_th[:,1],
                             'institution': df['categorie Institution'],
                             'title': df["Name of the document"],
-                            'labels': df["categorie Institution"]
+                            #'labels': df["categorie Institution"]
+                            'labels': df["theme"]
                             })
     alt.data_transformers.disable_max_rows()
     chart = alt.Chart(data_th[:]).mark_circle(size=200).encode(
@@ -219,7 +220,7 @@ def pipeline(dataframe, embedding_method, clustering_method, taille_cluster, red
 
 pipeline(dataframe=data_df, 
         embedding_method=roberta_embeddings,
-        clustering_method=Kmeans_fct, 
+        clustering_method=hierarchical_clustering, 
         taille_cluster=[10,11], 
         reduction_method=display_tsne)
 
