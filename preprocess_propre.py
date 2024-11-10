@@ -212,6 +212,6 @@ def assign_theme_with_highest_tfidf(text, keywords):
 # 3. Ajouter une nouvelle colonne 'theme' avec le thème ayant le mot-clé au score TF-IDF le plus élevé
 metadata_df['theme'] = metadata_df['text_processed'].apply(lambda text: assign_theme_with_highest_tfidf(text, keywords))
 
-metadata_df.to_csv('Data_csv/data_preprocessed_test.csv', index=False)
+metadata_df.to_csv('Data_csv/data_preprocessed.csv', index=False)
 
 
