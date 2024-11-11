@@ -128,8 +128,7 @@ def SVD_embeddings(df):
     texts = [' '.join([word for word in text.split() if word not in stopwords]) for text in texts]
     vocab,_  = vocabulary_fct(texts)
     M = co_occurence_matrix(texts, vocab, window=5, distance_weighting=False)
-    PPMI = pmi(M)
-    SVDEmbeddings = svd.fit_transform(PPMI)
+    SVDEmbeddings = svd.fit_transform(M)
     return SVDEmbeddings
 
 def SVD_embeddings_PPMI(df):
