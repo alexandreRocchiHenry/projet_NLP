@@ -161,7 +161,7 @@ def assign_themes(text, keywords):
 # Ajouter une nouvelle colonne 'thèmes' avec les thèmes détectés
 metadata_df['themes'] = metadata_df['text_processed'].apply(lambda text: assign_themes(text, keywords))
 """
-
+"""
 # Fonction pour attribuer le thème avec le plus de mots-clés trouvés
 def assign_theme_with_most_keywords(text, keywords):
     text_lower = text.lower()
@@ -182,6 +182,35 @@ def assign_theme_with_most_keywords(text, keywords):
 
 # Ajouter une nouvelle colonne 'theme' avec le thème ayant le plus de mots-clés détectés
 metadata_df['theme'] = metadata_df['text_processed'].apply(lambda text: assign_theme_with_most_keywords(text, keywords))
+"""
+feature_names = tfidf_vectorizer.get_feature_names_out()
+
+# 2. Créer une fonction pour attribuer le thème basé sur le plus grand score TF-IDF des mots-clés
+def assign_theme_with_highest_tfidf(text, keywords):
+    # Transformer le texte en un vecteur TF-IDF
+    tfidf_vector = tfidf_vectorizer.transform([text])
+    tfidf_scores = tfidf_vector.toarray()[0]
+    
+    theme_tfidf_scores = {}
+
+    for theme, kw_list in keywords.items():
+        # Trouver les scores TF-IDF pour les mots-clés de chaque thème
+        theme_scores = [tfidf_scores[feature_names.tolist().index(kw.lower())] 
+                        for kw in kw_list if kw.lower() in feature_names]
+        
+        # Prendre le plus grand score TF-IDF de ce thème
+        if theme_scores:
+            theme_tfidf_scores[theme] = max(theme_scores)
+
+    # Retourner le thème ayant le score TF-IDF le plus élevé
+    if theme_tfidf_scores:
+        max_theme = max(theme_tfidf_scores, key=theme_tfidf_scores.get)
+        return max_theme
+    else:
+        return 'Aucun thème'
+
+# 3. Ajouter une nouvelle colonne 'theme' avec le thème ayant le mot-clé au score TF-IDF le plus élevé
+metadata_df['theme'] = metadata_df['text_processed'].apply(lambda text: assign_theme_with_highest_tfidf(text, keywords))
 
 metadata_df.to_csv('Data_csv/data_preprocessed.csv', index=False)
 
