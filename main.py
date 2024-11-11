@@ -39,6 +39,64 @@ def tfidf(df):
     tfidf_a = Tfidf.toarray()
     return tfidf_a
 
+def vocabulary_fct(corpus, voc_threshold=473):
+    stopwords = nltk.corpus.stopwords.words('english')
+    word_counts = {}
+    for sent in corpus:
+        for word in [word.lower() for word in word_tokenize(sent) if word.isalpha()]:
+            if (word not in stopwords):
+                if (word not in word_counts):
+                    word_counts[word] = 0
+                word_counts[word] += 1           
+    words = sorted(word_counts.keys(), key=word_counts.get, reverse=True)
+    if voc_threshold > 0:
+        words = words[:voc_threshold] + ['UNK']   
+    vocabulary = {words[i] : i for i in range(len(words))}
+    return vocabulary, {word: word_counts.get(word, 0) for word in vocabulary}
+
+def co_occurence_matrix(corpus, vocabulary, window=0, distance_weighting=False):
+    stopwords = nltk.corpus.stopwords.words('english')
+    l = len(vocabulary)
+    cooc_matrix = np.zeros((l,l))
+    for sent in corpus:
+        # Get the sentence
+        sent = [word.lower() for word in word_tokenize(sent) if word.isalpha()]
+        # Obtain the indexes of the words in the sentence from the vocabulary 
+        sent_idx = [vocabulary.get(word, len(vocabulary)-1) for word in sent if (word not in stopwords)]
+        # Avoid one-word sentences - can create issues in normalization:
+        if len(sent_idx) == 1:
+                sent_idx.append(len(vocabulary)-1)
+        # Go through the indexes and add 1 / dist(i,j) to M[i,j] if words of index i and j appear in the same window
+        for i, idx in enumerate(sent_idx):
+            # If we consider a limited context:
+            if window > 0:
+                # Create a list containing the indexes that are on the left of the current index 'idx_i'
+                l_ctx_idx = [sent_idx[j] for j in range(max(0,i-window),i)]                
+            # If the context is the entire document:
+            else:
+                # The list containing the left context is easier to create
+                l_ctx_idx = sent_idx[:i]
+            # Go through the list and update M[i,j]:        
+            for j, ctx_idx in enumerate(l_ctx_idx):
+                if distance_weighting:
+                    weight = 1.0 / (len(l_ctx_idx) - j)
+                else:
+                    weight = 1.0
+                cooc_matrix[idx, ctx_idx] += weight * 1.0
+                cooc_matrix[ctx_idx, idx] += weight * 1.0
+    return cooc_matrix
+
+def pmi(co_oc, positive=True):
+    sum_vec = co_oc.sum(axis=0)
+    sum_tot = sum_vec.sum()
+    with np.errstate(divide='ignore'):
+        pmi = np.log((co_oc * sum_tot) / (np.outer(sum_vec, sum_vec)))                   
+    pmi[np.isinf(pmi)] = 0.0  # log(0) = 0
+    if positive:
+        pmi[pmi < 0] = 0.0
+    return pmi
+
+
 
 
 def get_embedding(word, model):
@@ -46,24 +104,6 @@ def get_embedding(word, model):
         return model[word]
     except KeyError:
         return np.zeros(100)  
-
-
-
-# def text_embedding(text, model):
-#     words = text.split()  # Sépare le texte en mots
-#     embeddings = [get_embedding(word, model) for word in words]
-    
-#     # Vérifie s'il y a au moins un vecteur valide (différent d'un vecteur de zéros)
-#     if len(embeddings) > 0:
-#         return np.mean(embeddings, axis=0)  # Renvoie la moyenne des vecteurs
-#     else:
-#         return np.zeros(100)
-    
-# # def glove_embedding(df):
-# #     nltk.download('punkt') 
-# #     glove_model = api.load('glove-wiki-gigaword-300')  
-# #     embedding_glove = df['text'].apply(lambda x: text_embedding(x, glove_model))
-# #     return glove_embedding
 
 def glove_embeddings(df):
     loaded_glove_model = api.load("glove-wiki-gigaword-300")
@@ -81,6 +121,28 @@ def glove_embeddings(df):
         all_embeddings_a = np.array(all_embeddings)
     return all_embeddings_a
 
+def SVD_embeddings(df):
+    svd = TruncatedSVD(n_components=300)
+    stopwords = nltk.corpus.stopwords.words('english')
+    texts = df['text'].values
+    texts = [' '.join([word for word in text.split() if word not in stopwords]) for text in texts]
+    vocab,_  = vocabulary_fct(texts)
+    M = co_occurence_matrix(texts, vocab, window=5, distance_weighting=False)
+    PPMI = pmi(M)
+    SVDEmbeddings = svd.fit_transform(PPMI)
+    return SVDEmbeddings
+
+def SVD_embeddings_PPMI(df):
+    svd_ppmi = TruncatedSVD(n_components=300)
+    stopwords = nltk.corpus.stopwords.words('english')
+    texts = df['text'].values
+    texts = [' '.join([word for word in text.split() if word not in stopwords]) for text in texts]
+    vocab,_  = vocabulary_fct(texts)
+    M = co_occurence_matrix(texts, vocab, window=5, distance_weighting=False)
+    PPMI = pmi(M)
+    SVDEmbeddings = svd_ppmi.fit_transform(PPMI)
+    return SVDEmbeddings
+
 def roberta_embeddings(df):
     tokenizer = RobertaTokenizer.from_pretrained('roberta-large')
     model = RobertaModel.from_pretrained('roberta-large')
@@ -97,7 +159,6 @@ def roberta_embeddings(df):
         embeddings.append(embedding)
     embeddings_array = np.array(embeddings)
     return embeddings_array
-
 
 def sentence_transformer_embeddings(df):
     model_name='roberta-base-nli-stsb-mean-tokens'
