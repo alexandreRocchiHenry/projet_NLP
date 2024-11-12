@@ -332,9 +332,11 @@ def main():
                 results.append({
                     'Embedding Method': embedding_method.__name__,
                     'Clustering Method': cluster_method.__name__,
+                    'Reduction Method': reduction.__name__,
                     'silhoutte score': result[0],  
                     'davies score' : result[1], 
-                    'calinski score' : result[2], 
+                    'calinski score' : result[2],
+                     
                 })
 
         # Conversion des résultats en DataFrame
