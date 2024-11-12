@@ -231,9 +231,9 @@ def display_ca(embeddings, df, labels, embedding_name, clustering_name):
     embeddings_ca = correspondence_analysis(embeddings)
     data_ca = pd.DataFrame({'x': embeddings_ca[:, 0],
                             'y': embeddings_ca[:, 1],
-                            'institution': df['categorie Institution'],
+                            'institution': df[labels],
                             'title': df["Name of the document"],
-                            'labels': labels
+                            'labels': df[labels]
                             })
     alt.data_transformers.disable_max_rows()
     chart = alt.Chart(data_ca).mark_circle(size=200).encode(
@@ -243,7 +243,7 @@ def display_ca(embeddings, df, labels, embedding_name, clustering_name):
         width=500,
         height=500
     )
-    chart.save(f'T3_initial_clustering_{embedding_name}_{clustering_name}_CA.html')
+    chart.save(f'T4_initial_clustering_{embedding_name}_{clustering_name}_CA.html')
     chart.show()
     
 
@@ -251,9 +251,9 @@ def display_pca(embeddings, df, labels, embedding_name, clustering_name):
     embeddings_pca = pca(embeddings)
     data_pca = pd.DataFrame({'x': embeddings_pca[:, 0],
                             'y': embeddings_pca[:, 1],
-                            'institution': df['categorie Institution'],
+                            'institution': df[labels],
                             'title': df["Name of the document"],
-                            'labels': labels
+                            'labels': df[labels]
                             })
     alt.data_transformers.disable_max_rows()
     chart = alt.Chart(data_pca).mark_circle(size=200).encode(
@@ -263,7 +263,7 @@ def display_pca(embeddings, df, labels, embedding_name, clustering_name):
         width=500,
         height=500
     )
-    chart.save(f'T3_initial_clustering_{embedding_name}_{clustering_name}_PCA.html')
+    chart.save(f'T4_initial_clustering_{embedding_name}_{clustering_name}_PCA.html')
     chart.show()   
 
 def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
@@ -274,9 +274,9 @@ def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
 
     data_th = pd.DataFrame({'x': docs_tsne_th[:,0],
                             'y': docs_tsne_th[:,1],
-                            'institution': df['categorie Institution'],
+                            'institution': df[labels],
                             'title': df["Name of the document"],
-                            'labels': labels
+                            'labels': df[labels]
                             #'labels': df["categorie Institution"]
                             #'labels': df["theme"]
                             })
@@ -289,7 +289,7 @@ def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
         width=500,
         height=500
     )
-    chart.save(f'T3_initial_clustering_{embedding_name}_{clustering_name}_TSNE.html')
+    chart.save(f'T4_initial_clustering_{embedding_name}_{clustering_name}_TSNE.html')
     chart.show()
 
 
@@ -303,7 +303,7 @@ def pipeline(dataframe, embedding_method, clustering_method, taille_cluster=[10,
     print("scoring")
     scores = score_function(embeddings, labels)
     print(f"silhouette_score: {scores[0]}, davies_bouldin_score: {scores[1]}, calinski_harabasz_score: {scores[2]}")
-    reduction_method(embeddings, dataframe, labels, embedding_method.__name__, clustering_method.__name__)
+    reduction_method(embeddings, dataframe, 'theme', embedding_method.__name__, clustering_method.__name__)
     return scores
 
 
@@ -343,7 +343,7 @@ def main():
         results_df = pd.DataFrame(results)
 
         # Sauvegarde des résultats dans un fichier CSV
-        results_df.to_csv(f'pipeline_results_{reduction}.csv', index=False)
+        results_df.to_csv(f'pipeline_results_{reduction}_Themes.csv', index=False)
 
 
 
