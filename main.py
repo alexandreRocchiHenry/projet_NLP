@@ -20,17 +20,14 @@ import gensim.downloader as api
 import nltk
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.mixture import GaussianMixture
-import torch
-from transformers import AutoTokenizer, AutoModel,AutoModelForSequenceClassification
-from sentence_transformers import SentenceTransformer
+# import torch
+# from transformers import AutoTokenizer, AutoModel,AutoModelForSequenceClassification
+# from sentence_transformers import SentenceTransformer
 
-from transformers import RobertaModel, RobertaTokenizer
+# from transformers import RobertaModel, RobertaTokenizer
 
 nltk.download('punkt')
 
-# Preprocessed dataframe
-data_proprocessed = "Data_csv/data_preprocessed.csv"
-data_df = pd.read_csv(data_proprocessed)
 
 # Embeddings functions
 def tfidf(df):
@@ -178,14 +175,14 @@ def pca(embeddings):
     return embeddings_pca
 
 # Clusterings functions
-def Kmeans_fct(n_clusters, embeddings):
+def Kmeans_clustering(n_clusters, embeddings):
     kmeans = KMeans(n_clusters=n_clusters, random_state=0)
     kmeans.fit(embeddings)
     labels = kmeans.labels_
     return labels
 
-def gaussian_clusterings(n_clusters, embeddings):
-    gmm = GaussianMixture(n_components=n_clusters, random_state=0)
+def gaussian_clustering(n_clusters, embeddings):
+    gmm = GaussianMixture(n_components=n_clusters, random_state=0, covariance_type='diag')
     gmm.fit(embeddings)
     labels = gmm.predict(embeddings)
     return labels
@@ -246,7 +243,7 @@ def display_pca(embeddings, df, labels):
     chart.save('chart.html')
     chart.show()   
 
-def display_tsne(embeddings, df, labels):
+def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
     docs_tsne_th = TSNE(n_components=2, learning_rate='auto',
                         init='random', metric='cosine',
                         perplexity=50.0).fit_transform(embeddings)
@@ -256,8 +253,9 @@ def display_tsne(embeddings, df, labels):
                             'y': docs_tsne_th[:,1],
                             'institution': df['categorie Institution'],
                             'title': df["Name of the document"],
+                            'labels': labels
                             #'labels': df["categorie Institution"]
-                            'labels': df["theme"]
+                            #'labels': df["theme"]
                             })
     alt.data_transformers.disable_max_rows()
     chart = alt.Chart(data_th[:]).mark_circle(size=200).encode(
@@ -268,13 +266,13 @@ def display_tsne(embeddings, df, labels):
         width=500,
         height=500
     )
-    chart.save('chart.html')
+    chart.save(f'initial_clustering_{embedding_name}_{clustering_name}.html')
     chart.show()
 
 
 # Clustering pipeline
-def pipeline(dataframe, embedding_method, clustering_method, taille_cluster, reduction_method=display_tsne):
-    print("start embedding")
+def pipeline(dataframe, embedding_method, clustering_method, taille_cluster=[10,11], reduction_method=display_tsne):
+    print(f"start embedding for {embedding_method.__name__} and {clustering_method.__name__}")
     embeddings = embedding_method(dataframe)
     print("clustering")
     for i in range(taille_cluster[0], taille_cluster[1]):
@@ -282,11 +280,44 @@ def pipeline(dataframe, embedding_method, clustering_method, taille_cluster, red
     print("scoring")
     scores = score_function(embeddings, labels)
     print(f"silhouette_score: {scores[0]}, davies_bouldin_score: {scores[1]}, calinski_harabasz_score: {scores[2]}")
-    reduction_method(embeddings, dataframe, labels)
+    reduction_method(embeddings, dataframe, labels, embedding_method.__name__, clustering_method.__name__)
     return scores
 
-pipeline(dataframe=data_df, 
-        embedding_method=roberta_embeddings,
-        clustering_method=hierarchical_clustering, 
-        taille_cluster=[10,11], 
-        reduction_method=display_tsne)
+
+
+def main():
+    # Preprocessed dataframe
+    data_proprocessed = "Data_csv/data_preprocessed.csv"
+    data_df = pd.read_csv(data_proprocessed)
+
+    Clustering_methods = [Kmeans_clustering, gaussian_clustering, hierarchical_clustering]
+    Embedding_methods = [tfidf, glove_embeddings, SVD_embeddings, SVD_embeddings_PPMI]
+    results = []
+
+    for embedding_method in Embedding_methods:
+        for cluster_method in Clustering_methods:
+
+            result = pipeline(dataframe=data_df, 
+                            embedding_method=embedding_method,
+                            clustering_method=cluster_method)
+            
+            results.append({
+                'Embedding Method': embedding_method.__name__,
+                'Clustering Method': cluster_method.__name__,
+                'silhoutte score': result[0],  
+                'davies score' : result[1], 
+                'calinski score' : result[2], 
+            })
+
+    # Conversion des résultats en DataFrame
+    results_df = pd.DataFrame(results)
+
+    # Sauvegarde des résultats dans un fichier CSV
+    results_df.to_csv('pipeline_results.csv', index=False)
+
+
+
+    return
+
+if __name__ == "__main__":
+    main()

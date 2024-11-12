@@ -9,7 +9,9 @@ import re
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 import ujson as json
+from tqdm import tqdm
 
+tqdm.pandas()
 
 metadata_df = pd.read_csv('Data_csv/metadata.csv')
 
@@ -47,14 +49,15 @@ metadata_df = metadata_df[metadata_df['text'].apply(is_css_document) == False]
 
 def preprocess_text(text):
     #text = text.lower()
-    #text = re.sub(r'(#+\S+|@\S+|\s+@\S+|http\S+|word01|word02|[^A-Za-z0-9\'\’ ]+)', "", text)
     text = re.sub(r'\n{3,}', '\n\n', text)
     text = re.sub(r'\s{2,}', ' ', text)
     tokens = word_tokenize(text)
+    stop_words = set(stopwords.words('english'))
+    tokens = [word for word in tokens if word not in stop_words]
     cleaned_text = ' '.join(tokens)
     return cleaned_text
 
-metadata_df['text_processed'] = metadata_df['text'].apply(preprocess_text)
+metadata_df['text_processed'] = metadata_df['text'].progress_apply(preprocess_text)
 print(metadata_df['text_processed'].head(5))
 
 tfidf_vectorizer = TfidfVectorizer()
@@ -185,7 +188,7 @@ metadata_df['theme'] = metadata_df['text_processed'].apply(lambda text: assign_t
 """
 feature_names = tfidf_vectorizer.get_feature_names_out()
 
-# 2. Créer une fonction pour attribuer le thème basé sur le plus grand score TF-IDF des mots-clés
+# Fonction pour attribuer le thème basé sur le plus grand score TF-IDF des mots-clés
 def assign_theme_with_highest_tfidf(text, keywords):
     # Transformer le texte en un vecteur TF-IDF
     tfidf_vector = tfidf_vectorizer.transform([text])
@@ -210,7 +213,7 @@ def assign_theme_with_highest_tfidf(text, keywords):
         return 'Aucun thème'
 
 # 3. Ajouter une nouvelle colonne 'theme' avec le thème ayant le mot-clé au score TF-IDF le plus élevé
-metadata_df['theme'] = metadata_df['text_processed'].apply(lambda text: assign_theme_with_highest_tfidf(text, keywords))
+metadata_df['theme'] = metadata_df['text_processed'].progress_apply(lambda text: assign_theme_with_highest_tfidf(text, keywords))
 
 metadata_df.to_csv('Data_csv/data_preprocessed.csv', index=False)
 
