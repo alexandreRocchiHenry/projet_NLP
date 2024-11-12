@@ -227,13 +227,13 @@ def score_function(embeddings, labels):
     calinski_harabasz_s = calinski_harabasz_score(embeddings, labels)
     return silhouette_s, davies_bouldin_s, calinski_harabasz_s
 
-def display_ca(embeddings, df, labels):
+def display_ca(embeddings, df, labels, embedding_name, clustering_name):
     embeddings_ca = correspondence_analysis(embeddings)
     data_ca = pd.DataFrame({'x': embeddings_ca[:, 0],
                             'y': embeddings_ca[:, 1],
                             'institution': df['categorie Institution'],
                             'title': df["Name of the document"],
-                            'labels': df["categorie Institution"]
+                            'labels': labels
                             })
     alt.data_transformers.disable_max_rows()
     chart = alt.Chart(data_ca).mark_circle(size=200).encode(
@@ -243,17 +243,17 @@ def display_ca(embeddings, df, labels):
         width=500,
         height=500
     )
-    chart.save('chart.html')
+    chart.save(f'T3_initial_clustering_{embedding_name}_{clustering_name}_CA.html')
     chart.show()
     
 
-def display_pca(embeddings, df, labels):
+def display_pca(embeddings, df, labels, embedding_name, clustering_name):
     embeddings_pca = pca(embeddings)
     data_pca = pd.DataFrame({'x': embeddings_pca[:, 0],
                             'y': embeddings_pca[:, 1],
                             'institution': df['categorie Institution'],
                             'title': df["Name of the document"],
-                            'labels': df["categorie Institution"]
+                            'labels': labels
                             })
     alt.data_transformers.disable_max_rows()
     chart = alt.Chart(data_pca).mark_circle(size=200).encode(
@@ -263,7 +263,7 @@ def display_pca(embeddings, df, labels):
         width=500,
         height=500
     )
-    chart.save('chart.html')
+    chart.save(f'T3_initial_clustering_{embedding_name}_{clustering_name}_PCA.html')
     chart.show()   
 
 def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
@@ -289,7 +289,7 @@ def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
         width=500,
         height=500
     )
-    chart.save(f'T2_initial_clustering_{embedding_name}_{clustering_name}.html')
+    chart.save(f'T3_initial_clustering_{embedding_name}_{clustering_name}_TSNE.html')
     chart.show()
 
 
@@ -313,31 +313,35 @@ def main():
     data_proprocessed = "Data_csv/data_preprocessed.csv"
     data_df = pd.read_csv(data_proprocessed)
 
-    Clustering_methods = [Kmeans_clustering, gaussian_clustering, hierarchical_clustering]
-    Embedding_methods = [tfidf, glove_embeddings, SVD_embeddings, SVD_embeddings_PPMI, roberta_embeddings, sentence_transformer_embeddings]
+    Clustering_methods = [Kmeans_clustering, hierarchical_clustering]
+    Embedding_methods = [glove_embeddings, SVD_embeddings, SVD_embeddings_PPMI, sentence_transformer_embeddings]
+    reduction_methods = [display_pca, display_tsne, display_ca]
 
     results = []
 
     for embedding_method in Embedding_methods:
         for cluster_method in Clustering_methods:
- 
-            result = pipeline(dataframe=data_df, 
-                            embedding_method=embedding_method,
-                            clustering_method=cluster_method)
-            
-            results.append({
-                'Embedding Method': embedding_method.__name__,
-                'Clustering Method': cluster_method.__name__,
-                'silhoutte score': result[0],  
-                'davies score' : result[1], 
-                'calinski score' : result[2], 
-            })
+            for reduction in reduction_methods:
+                
+                result = pipeline(dataframe=data_df, 
+                                embedding_method=embedding_method,
+                                clustering_method=cluster_method,
+                                reduction_method=reduction
+                                )
+                
+                results.append({
+                    'Embedding Method': embedding_method.__name__,
+                    'Clustering Method': cluster_method.__name__,
+                    'silhoutte score': result[0],  
+                    'davies score' : result[1], 
+                    'calinski score' : result[2], 
+                })
 
-    # Conversion des résultats en DataFrame
-    results_df = pd.DataFrame(results)
+        # Conversion des résultats en DataFrame
+        results_df = pd.DataFrame(results)
 
-    # Sauvegarde des résultats dans un fichier CSV
-    results_df.to_csv('pipeline_results2.csv', index=False)
+        # Sauvegarde des résultats dans un fichier CSV
+        results_df.to_csv(f'pipeline_results_{reduction}.csv', index=False)
 
 
 
