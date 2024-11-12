@@ -20,12 +20,14 @@ import gensim.downloader as api
 import nltk
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.mixture import GaussianMixture
-# import torch
-# from transformers import AutoTokenizer, AutoModel,AutoModelForSequenceClassification
-# from sentence_transformers import SentenceTransformer
+import torch
+from transformers import AutoTokenizer, AutoModel,AutoModelForSequenceClassification
+from sentence_transformers import SentenceTransformer
 
-# from transformers import RobertaModel, RobertaTokenizer
+from transformers import RobertaModel, RobertaTokenizer
 
+
+loaded_glove_model = api.load("glove-wiki-gigaword-300")
 nltk.download('punkt')
 
 
@@ -36,7 +38,7 @@ def tfidf(df):
     tfidf_a = Tfidf.toarray()
     return tfidf_a
 
-def vocabulary_fct(corpus, voc_threshold=473):
+def vocabulary_fct(corpus, voc_threshold):
     stopwords = nltk.corpus.stopwords.words('english')
     word_counts = {}
     for sent in corpus:
@@ -103,7 +105,6 @@ def get_embedding(word, model):
         return np.zeros(100)  
 
 def glove_embeddings(df):
-    loaded_glove_model = api.load("glove-wiki-gigaword-300")
     all_embeddings = []
     for text in df['text_processed']:
         word_vectors = []
@@ -120,24 +121,42 @@ def glove_embeddings(df):
 
 def SVD_embeddings(df):
     svd = TruncatedSVD(n_components=300)
-    stopwords = nltk.corpus.stopwords.words('english')
     texts = df['text'].values
-    texts = [' '.join([word for word in text.split() if word not in stopwords]) for text in texts]
-    vocab,_  = vocabulary_fct(texts)
+    vocab,_  = vocabulary_fct(texts, 5000)
     M = co_occurence_matrix(texts, vocab, window=5, distance_weighting=False)
     SVDEmbeddings = svd.fit_transform(M)
-    return SVDEmbeddings
+    all_embeddings = []
+    for texts in df['text_processed']:
+        words = texts.split()
+        word_indices = [vocab.get(word) for word in words if word in vocab]
+        text_embeddings = [SVDEmbeddings[idx] for idx in word_indices if idx is not None]
+        if text_embeddings:
+            document_embedding = np.mean(text_embeddings, axis=0)
+        else:
+            document_embedding = np.zeros(svd.n_components)
+        all_embeddings.append(document_embedding)
+        all_embeddings_a = np.array(all_embeddings)
+    return all_embeddings_a
 
 def SVD_embeddings_PPMI(df):
     svd_ppmi = TruncatedSVD(n_components=300)
-    stopwords = nltk.corpus.stopwords.words('english')
     texts = df['text'].values
-    texts = [' '.join([word for word in text.split() if word not in stopwords]) for text in texts]
-    vocab,_  = vocabulary_fct(texts)
+    vocab,_  = vocabulary_fct(texts, 5000)
     M = co_occurence_matrix(texts, vocab, window=5, distance_weighting=False)
     PPMI = pmi(M)
     SVDEmbeddings = svd_ppmi.fit_transform(PPMI)
-    return SVDEmbeddings
+    all_embeddings = []
+    for texts in df['text_processed']:
+        words = texts.split()
+        word_indices = [vocab.get(word) for word in words if word in vocab]
+        text_embeddings = [SVDEmbeddings[idx] for idx in word_indices if idx is not None]
+        if text_embeddings:
+            document_embedding = np.mean(text_embeddings, axis=0)
+        else:
+            document_embedding = np.zeros(svd_ppmi.n_components)
+        all_embeddings.append(document_embedding)
+        all_embeddings_a = np.array(all_embeddings)
+    return all_embeddings_a
 
 def roberta_embeddings(df):
     tokenizer = RobertaTokenizer.from_pretrained('roberta-large')
@@ -175,19 +194,23 @@ def pca(embeddings):
     return embeddings_pca
 
 # Clusterings functions
-def Kmeans_clustering(n_clusters, embeddings):
+def Kmeans_clustering(n_clusters, embeddings, model_name):
     kmeans = KMeans(n_clusters=n_clusters, random_state=0)
     kmeans.fit(embeddings)
     labels = kmeans.labels_
     return labels
 
-def gaussian_clustering(n_clusters, embeddings):
-    gmm = GaussianMixture(n_components=n_clusters, random_state=0, covariance_type='diag')
+def gaussian_clustering(n_clusters, embeddings, model_name):
+    if model_name == 'roberta_embeddings':
+        n_clusters = n_clusters - 3
+    if model_name == 'sentence_transformer_embeddings':
+        n_clusters = n_clusters
+    gmm = GaussianMixture(n_components=n_clusters, random_state=0, covariance_type='diag', reg_covar=1e-6)
     gmm.fit(embeddings)
     labels = gmm.predict(embeddings)
     return labels
 
-def hierarchical_clustering(n_clusters, embeddings):
+def hierarchical_clustering(n_clusters, embeddings, model_name):
     hc = AgglomerativeClustering(n_clusters=n_clusters, metric='euclidean', linkage='ward')
     labels = hc.fit_predict(embeddings)
     return labels
@@ -266,17 +289,17 @@ def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
         width=500,
         height=500
     )
-    chart.save(f'initial_clustering_{embedding_name}_{clustering_name}.html')
+    chart.save(f'T2_initial_clustering_{embedding_name}_{clustering_name}.html')
     chart.show()
 
 
 # Clustering pipeline
-def pipeline(dataframe, embedding_method, clustering_method, taille_cluster=[10,11], reduction_method=display_tsne):
+def pipeline(dataframe, embedding_method, clustering_method, taille_cluster=[10,11], reduction_method=display_pca):
     print(f"start embedding for {embedding_method.__name__} and {clustering_method.__name__}")
     embeddings = embedding_method(dataframe)
     print("clustering")
     for i in range(taille_cluster[0], taille_cluster[1]):
-        labels = clustering_method(i, embeddings)
+        labels = clustering_method(i, embeddings, embedding_method.__name__)
     print("scoring")
     scores = score_function(embeddings, labels)
     print(f"silhouette_score: {scores[0]}, davies_bouldin_score: {scores[1]}, calinski_harabasz_score: {scores[2]}")
@@ -291,12 +314,13 @@ def main():
     data_df = pd.read_csv(data_proprocessed)
 
     Clustering_methods = [Kmeans_clustering, gaussian_clustering, hierarchical_clustering]
-    Embedding_methods = [tfidf, glove_embeddings, SVD_embeddings, SVD_embeddings_PPMI]
+    Embedding_methods = [tfidf, glove_embeddings, SVD_embeddings, SVD_embeddings_PPMI, roberta_embeddings, sentence_transformer_embeddings]
+
     results = []
 
     for embedding_method in Embedding_methods:
         for cluster_method in Clustering_methods:
-
+ 
             result = pipeline(dataframe=data_df, 
                             embedding_method=embedding_method,
                             clustering_method=cluster_method)
@@ -313,7 +337,7 @@ def main():
     results_df = pd.DataFrame(results)
 
     # Sauvegarde des résultats dans un fichier CSV
-    results_df.to_csv('pipeline_results.csv', index=False)
+    results_df.to_csv('pipeline_results2.csv', index=False)
 
 
 
