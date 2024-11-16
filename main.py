@@ -8,6 +8,7 @@ from sklearn.manifold import TSNE
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
 import altair as alt
+import prince
 
 from nltk.tokenize import word_tokenize
 
@@ -188,9 +189,54 @@ def tsne(embeddings):
                 init='pca').fit_transform(embeddings)
     return docs_tsne
 
+def create_contingency_table(df, cluster_labels, theme_labels):
+    df_temp = df.copy()
+    df_temp['Cluster'] = cluster_labels
+    df_temp['Theme'] = theme_labels
+    contingency_table = pd.crosstab(df_temp['Cluster'], df_temp['Theme'])
+    return contingency_table
+
+
+def perform_correspondence_analysis(contingency_table):
+    ca = prince.CA(n_components=2, n_iter=10, copy=True, check_input=True, engine='auto')
+    ca = ca.fit(contingency_table)
+    row_coords = ca.row_coordinates(contingency_table)
+    col_coords = ca.column_coordinates(contingency_table)
+    return ca, row_coords, col_coords
+
+def plot_ca_results(row_coords, col_coords, embedding_name, clustering_name):
+    fig, ax = plt.subplots(figsize=(10, 8))
+
+   
+    ax.scatter(row_coords[0], row_coords[1], c='blue', label='Clusters')
+    for i, txt in enumerate(row_coords.index):
+        ax.annotate(txt, (row_coords.iloc[i, 0], row_coords.iloc[i, 1]))
+
+
+    ax.scatter(col_coords[0], col_coords[1], c='red', label='Themes', marker='x')
+    for i, txt in enumerate(col_coords.index):
+        ax.annotate(txt, (col_coords.iloc[i, 0], col_coords.iloc[i, 1]))
+
+    ax.legend()
+    ax.set_xlabel('Dimension 1')
+    ax.set_ylabel('Dimension 2')
+    ax.set_title('Correspondence Analysis')
+    plt.savefig(f'T4_initial_clustering_{embedding_name}_{clustering_name}_CA.png')
+    plt.show()
+
+
+def display_ca(embeddings, cluster_labels, df, embedding_name, clustering_name):
+    theme_labels = df['theme']
+    contingency_table = create_contingency_table(df, cluster_labels, theme_labels)
+    ca, row_coords, col_coords = perform_correspondence_analysis(contingency_table)
+    plot_ca_results(row_coords, col_coords, embedding_name, clustering_name)
+
+
 def pca(embeddings):
     pca = PCA(n_components=2)
     embeddings_pca = pca.fit_transform(embeddings)
+    explained_variance = pca.explained_variance_ratio_ 
+    print(f"Explained variance: {explained_variance}")
     return embeddings_pca
 
 # Clusterings functions
@@ -227,24 +273,24 @@ def score_function(embeddings, labels):
     calinski_harabasz_s = calinski_harabasz_score(embeddings, labels)
     return silhouette_s, davies_bouldin_s, calinski_harabasz_s
 
-def display_ca(embeddings, df, labels, embedding_name, clustering_name):
-    embeddings_ca = correspondence_analysis(embeddings)
-    data_ca = pd.DataFrame({'x': embeddings_ca[:, 0],
-                            'y': embeddings_ca[:, 1],
-                            'institution': df[labels],
-                            'title': df["Name of the document"],
-                            'labels': df[labels]
-                            })
-    alt.data_transformers.disable_max_rows()
-    chart = alt.Chart(data_ca).mark_circle(size=200).encode(
-        x="x", y="y", color=alt.Color('labels:N', scale=alt.Scale(scheme='category20')),
-        tooltip=['institution', "title"]
-        ).interactive().properties(
-        width=500,
-        height=500
-    )
-    chart.save(f'T4_initial_clustering_{embedding_name}_{clustering_name}_CA.html')
-    chart.show()
+# def display_ca(embeddings, df, labels, embedding_name, clustering_name):
+#     embeddings_ca = correspondence_analysis(embeddings)
+#     data_ca = pd.DataFrame({'x': embeddings_ca[:, 0],
+#                             'y': embeddings_ca[:, 1],
+#                             'institution': df[labels],
+#                             'title': df["Name of the document"],
+#                             'labels': df[labels]
+#                             })
+#     alt.data_transformers.disable_max_rows()
+#     chart = alt.Chart(data_ca).mark_circle(size=200).encode(
+#         x="x", y="y", color=alt.Color('labels:N', scale=alt.Scale(scheme='category20')),
+#         tooltip=['institution', "title"]
+#         ).interactive().properties(
+#         width=500,
+#         height=500
+#     )
+#     chart.save(f'T4_initial_clustering_{embedding_name}_{clustering_name}_CA.html')
+#     chart.show()
     
 
 def display_pca(embeddings, df, labels, embedding_name, clustering_name):
@@ -253,7 +299,7 @@ def display_pca(embeddings, df, labels, embedding_name, clustering_name):
                             'y': embeddings_pca[:, 1],
                             'institution': df[labels],
                             'title': df["Name of the document"],
-                            'labels': df[labels]
+                            'labels': labels
                             })
     alt.data_transformers.disable_max_rows()
     chart = alt.Chart(data_pca).mark_circle(size=200).encode(
@@ -263,7 +309,7 @@ def display_pca(embeddings, df, labels, embedding_name, clustering_name):
         width=500,
         height=500
     )
-    chart.save(f'T4_initial_clustering_{embedding_name}_{clustering_name}_PCA.html')
+    chart.save(f'T5_initial_clustering_{embedding_name}_{clustering_name}_PCA.html')
     chart.show()   
 
 def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
@@ -276,7 +322,7 @@ def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
                             'y': docs_tsne_th[:,1],
                             'institution': df[labels],
                             'title': df["Name of the document"],
-                            'labels': df[labels]
+                            'labels': labels
                             #'labels': df["categorie Institution"]
                             #'labels': df["theme"]
                             })
@@ -289,7 +335,7 @@ def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
         width=500,
         height=500
     )
-    chart.save(f'T4_initial_clustering_{embedding_name}_{clustering_name}_TSNE.html')
+    chart.save(f'T5_initial_clustering_{embedding_name}_{clustering_name}_TSNE.html')
     chart.show()
 
 
@@ -303,7 +349,7 @@ def pipeline(dataframe, embedding_method, clustering_method, taille_cluster=[10,
     print("scoring")
     scores = score_function(embeddings, labels)
     print(f"silhouette_score: {scores[0]}, davies_bouldin_score: {scores[1]}, calinski_harabasz_score: {scores[2]}")
-    reduction_method(embeddings, dataframe, 'theme', embedding_method.__name__, clustering_method.__name__)
+    reduction_method(embeddings, dataframe, labels, embedding_method.__name__, clustering_method.__name__)
     return scores
 
 
@@ -313,9 +359,9 @@ def main():
     data_proprocessed = "Data_csv/data_preprocessed.csv"
     data_df = pd.read_csv(data_proprocessed)
 
-    Clustering_methods = [Kmeans_clustering, hierarchical_clustering]
-    Embedding_methods = [glove_embeddings, SVD_embeddings, SVD_embeddings_PPMI, sentence_transformer_embeddings]
-    reduction_methods = [display_pca, display_tsne, display_ca]
+    Clustering_methods = [Kmeans_clustering]
+    Embedding_methods = [sentence_transformer_embeddings]
+    reduction_methods = [display_pca]
 
     results = []
 
@@ -343,7 +389,7 @@ def main():
         results_df = pd.DataFrame(results)
 
         # Sauvegarde des résultats dans un fichier CSV
-        results_df.to_csv(f'pipeline_results_{reduction}_Themes.csv', index=False)
+        results_df.to_csv(f'pipeline_results_{reduction}_2.csv', index=False)
 
 
 
