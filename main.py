@@ -297,7 +297,7 @@ def display_pca(embeddings, df, labels, embedding_name, clustering_name):
     embeddings_pca = pca(embeddings)
     data_pca = pd.DataFrame({'x': embeddings_pca[:, 0],
                             'y': embeddings_pca[:, 1],
-                            'institution': df[labels],
+                            'institution': df["Institution"],
                             'title': df["Name of the document"],
                             'labels': labels
                             })
@@ -311,6 +311,49 @@ def display_pca(embeddings, df, labels, embedding_name, clustering_name):
     )
     chart.save(f'T5_initial_clustering_{embedding_name}_{clustering_name}_PCA.html')
     chart.show()   
+
+def display_pca_with_topics(embeddings, df, embedding_name, clustering_name, topic_keywords):
+    embeddings_pca = pca(embeddings)
+    data_pca = pd.DataFrame({
+        'x': embeddings_pca[:, 0],
+        'y': embeddings_pca[:, 1],
+        'Cluster': df['Cluster'],
+        'Topic': df['Topic'],
+        'Text': df['text_processed']
+    })
+    
+    # Créer une colonne combinée pour Cluster et Topic pour une meilleure distinction
+    data_pca['Cluster_Topic'] = data_pca['Cluster'].astype(str) + '_' + data_pca['Topic'].astype(str)
+    
+    # Préparer les mots-clés des topics pour les annotations
+    topic_labels = {}
+    for cluster_label in topic_keywords:
+        topics = topic_keywords[cluster_label]
+        for idx, keywords in enumerate(topics):
+            label = f"Cluster {cluster_label}, Topic {idx}"
+            words = ', '.join(keywords)
+            topic_labels[f"{cluster_label}_{idx}"] = words
+    
+    # Ajouter les mots-clés en tant que labels
+    data_pca['Topic_Keywords'] = data_pca['Cluster_Topic'].map(topic_labels)
+    
+    # Visualisation avec Altair
+    alt.data_transformers.disable_max_rows()
+    chart = alt.Chart(data_pca).mark_circle(size=60).encode(
+        x='x',
+        y='y',
+        color=alt.Color('Cluster_Topic:N', scale=alt.Scale(scheme='category20')),
+        tooltip=['Text', 'Topic_Keywords']
+    ).properties(
+        width=800,
+        height=600,
+        title=f'PCA Visualization with LDA Topics ({embedding_name}, {clustering_name})'
+    ).interactive()
+    
+    chart.save(f'PCA_with_LDA_Topics_{embedding_name}_{clustering_name}.html')
+    chart.show()
+
+
 
 def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
     docs_tsne_th = TSNE(n_components=2, learning_rate='auto',
@@ -339,17 +382,67 @@ def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
     chart.show()
 
 
+from sklearn.decomposition import LatentDirichletAllocation
+from sklearn.feature_extraction.text import CountVectorizer
+
+
+def extract_topic_keywords(lda_model, vectorizer, n_top_words=10):
+    keywords = []
+    feature_names = vectorizer.get_feature_names_out()
+    for topic_idx, topic in enumerate(lda_model.components_):
+        top_features_ind = topic.argsort()[:-n_top_words - 1:-1]
+        top_features = [feature_names[i] for i in top_features_ind]
+        keywords.append(top_features)
+    return keywords
+
+def lda_on_clusters(df, n_topics=5):
+    cluster_labels = df['Cluster'].unique()
+    lda_models = {}
+    vectorizers = {}
+    topic_keywords = {}
+    
+    for label in cluster_labels:
+        cluster_data = df[df['Cluster'] == label]
+        vectorizer = CountVectorizer(max_df=0.95, min_df=2, stop_words='english')
+        dtm = vectorizer.fit_transform(cluster_data['text_processed'])
+        
+        lda = LatentDirichletAllocation(n_components=n_topics, random_state=0)
+        lda.fit(dtm)
+        
+        lda_models[label] = lda
+        vectorizers[label] = vectorizer
+        
+        # Attribution des topics aux documents du cluster
+        topic_values = lda.transform(dtm)
+        df.loc[df['Cluster'] == label, 'Topic'] = topic_values.argmax(axis=1)
+        
+        # Extraction des mots-clés pour chaque topic
+        keywords = extract_topic_keywords(lda, vectorizer)
+        topic_keywords[label] = keywords
+    
+    return df, lda_models, vectorizers, topic_keywords
+
+
+
+
 # Clustering pipeline
-def pipeline(dataframe, embedding_method, clustering_method, taille_cluster=[10,11], reduction_method=display_pca):
-    print(f"start embedding for {embedding_method.__name__} and {clustering_method.__name__}")
+def pipeline(dataframe, embedding_method, clustering_method, reduction_method, taille_cluster=[10,11]):
+    print(f"Start embedding with {embedding_method.__name__}")
     embeddings = embedding_method(dataframe)
-    print("clustering")
+    print("Clustering")
     for i in range(taille_cluster[0], taille_cluster[1]):
         labels = clustering_method(i, embeddings, embedding_method.__name__)
-    print("scoring")
+    dataframe['Cluster'] = labels
+    print("Scoring")
     scores = score_function(embeddings, labels)
-    print(f"silhouette_score: {scores[0]}, davies_bouldin_score: {scores[1]}, calinski_harabasz_score: {scores[2]}")
-    reduction_method(embeddings, dataframe, labels, embedding_method.__name__, clustering_method.__name__)
+    print(f"Silhouette Score: {scores[0]}, Davies-Bouldin Score: {scores[1]}, Calinski-Harabasz Score: {scores[2]}")
+    
+    print("Applying LDA on Clusters")
+    dataframe, lda_models, vectorizers, topic_keywords = lda_on_clusters(dataframe)
+    
+    print("Displaying PCA with LDA Topics")
+    display_pca_with_topics(embeddings, dataframe, embedding_method.__name__, clustering_method.__name__, topic_keywords)
+    
     return scores
 
 
