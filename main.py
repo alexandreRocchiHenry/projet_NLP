@@ -426,7 +426,7 @@ def lda_on_clusters(df, n_topics=5):
 
 
 # Clustering pipeline
-def pipeline(dataframe, embedding_method, clustering_method, reduction_method, taille_cluster=[10,11]):
+def pipeline(dataframe, embedding_method, clustering_method, taille_cluster=[10,11], reduction_method=None):
     print(f"Start embedding with {embedding_method.__name__}")
     embeddings = embedding_method(dataframe)
     print("Clustering")
