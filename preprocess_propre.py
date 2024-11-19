@@ -10,8 +10,12 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 import ujson as json
 from tqdm import tqdm
+import string
 
 tqdm.pandas()
+nltk.download('stopwords')
+nltk.download('punkt')
+
 
 metadata_df = pd.read_csv('Data_csv/metadata.csv')
 
@@ -41,19 +45,33 @@ metadata_df = metadata_df[metadata_df['langue'] == 'en']
 
 
 def is_css_document(text):
-    return not (re.search(r"{margin-|{display:",text) == None)
+    return not (re.search(r"{margin-|{display:|layout-class|maxwidth",text) == None)
+
+from bs4 import BeautifulSoup
+
+def is_html_document(text):
+    soup = BeautifulSoup(text, "html.parser")
+    # Si le contenu textuel est très faible par rapport au contenu total, c'est probablement du code HTML/CSS
+    text_length = len(soup.get_text(strip=True))
+    total_length = len(text)
+    return text_length / total_length < 0.5  # Seuil à ajuster
 
 # Appliquer le filtrage directement à la colonne 'text'
+metadata_df = metadata_df[metadata_df['text'].apply(is_html_document) == False]
+
 metadata_df = metadata_df[metadata_df['text'].apply(is_css_document) == False]
 
-
 def preprocess_text(text):
-    #text = text.lower()
+    text = text.lower()
     text = re.sub(r'\n{3,}', '\n\n', text)
     text = re.sub(r'\s{2,}', ' ', text)
+    
     tokens = word_tokenize(text)
-    stop_words = set(stopwords.words('english'))
-    tokens = [word for word in tokens if word not in stop_words]
+    tokens = [word for word in tokens if word not in string.punctuation] 
+    
+    stopwords = nltk.corpus.stopwords.words('english')
+    
+    tokens = [word for word in tokens if word not in stopwords]
     cleaned_text = ' '.join(tokens)
     return cleaned_text
 
