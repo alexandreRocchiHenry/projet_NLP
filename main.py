@@ -389,7 +389,7 @@ def main():
         results_df = pd.DataFrame(results)
 
         # Sauvegarde des résultats dans un fichier CSV
-        results_df.to_csv(f'pipeline_results_{reduction}_2.csv', index=False)
+        results_df.to_csv(f'pipeline_results_{reduction.__name__}_2.csv', index=False)
 
 
 
