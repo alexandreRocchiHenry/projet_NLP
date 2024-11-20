@@ -43,10 +43,6 @@ def get_language(text):
 metadata_df['langue'] = metadata_df['text'].apply(get_language)
 metadata_df = metadata_df[metadata_df['langue'] == 'en']
 
-
-def is_css_document(text):
-    return not (re.search(r"{margin-|{display:|layout-class|maxwidth",text) == None)
-
 from bs4 import BeautifulSoup
 
 def is_html_document(text):
@@ -56,10 +52,49 @@ def is_html_document(text):
     total_length = len(text)
     return text_length / total_length < 0.5  # Seuil à ajuster
 
-# Appliquer le filtrage directement à la colonne 'text'
-metadata_df = metadata_df[metadata_df['text'].apply(is_html_document) == False]
+def is_wp_preset_document(text):
+    # Rechercher les occurrences de '-- wp -- preset --'
+    preset_pattern = r'--\s*wp\s*--\s*preset\s*--'
+    matches = re.findall(preset_pattern, text, re.IGNORECASE)
+    return len(matches) > 5 
 
-metadata_df = metadata_df[metadata_df['text'].apply(is_css_document) == False]
+def is_css_document(text):
+    css_pattern = r'[^\n]*\{\s*[^}]*\s*\}'
+    matches = re.findall(css_pattern, text)
+    return len(matches) > 5
+
+def is_code_like_text(text):
+    total_chars = len(text)
+    alnum_chars = sum(c.isalnum() or c.isspace() for c in text)
+    non_alnum_ratio = (total_chars - alnum_chars) / total_chars
+    return non_alnum_ratio > 0.3
+
+def is_meaningful_text(text):
+    if pd.isna(text) or len(text.strip()) == 0:
+        return False
+    language, confidence = langid.classify(text)
+    confidence = confidence if language == 'en' else 0
+    confidence = abs(confidence)
+    return confidence > 100
+
+def is_valid_document(text):
+    if not is_meaningful_text(text):
+        return False
+    if is_css_document(text):
+        return False
+    if is_code_like_text(text):
+        return False
+    if is_html_document(text):
+        return False
+    if is_wp_preset_document(text):
+        return False
+    return True
+
+# Apply the composite validation function
+metadata_df = metadata_df[metadata_df['text'].apply(is_valid_document)]
+
+
+
 
 def preprocess_text(text):
     text = text.lower()
