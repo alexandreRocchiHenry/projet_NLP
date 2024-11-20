@@ -9,6 +9,12 @@ import re
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 import ujson as json
+from tqdm import tqdm
+import string
+
+tqdm.pandas()
+nltk.download('stopwords')
+nltk.download('punkt')
 
 
 metadata_df = pd.read_csv('Data_csv/metadata.csv')
@@ -37,24 +43,74 @@ def get_language(text):
 metadata_df['langue'] = metadata_df['text'].apply(get_language)
 metadata_df = metadata_df[metadata_df['langue'] == 'en']
 
+from bs4 import BeautifulSoup
+
+def is_html_document(text):
+    soup = BeautifulSoup(text, "html.parser")
+    # Si le contenu textuel est très faible par rapport au contenu total, c'est probablement du code HTML/CSS
+    text_length = len(soup.get_text(strip=True))
+    total_length = len(text)
+    return text_length / total_length < 0.5  # Seuil à ajuster
+
+def is_wp_preset_document(text):
+    # Rechercher les occurrences de '-- wp -- preset --'
+    preset_pattern = r'--\s*wp\s*--\s*preset\s*--'
+    matches = re.findall(preset_pattern, text, re.IGNORECASE)
+    return len(matches) > 5 
 
 def is_css_document(text):
-    return not (re.search(r"{margin-|{display:",text) == None)
+    css_pattern = r'[^\n]*\{\s*[^}]*\s*\}'
+    matches = re.findall(css_pattern, text)
+    return len(matches) > 5
 
-# Appliquer le filtrage directement à la colonne 'text'
-metadata_df = metadata_df[metadata_df['text'].apply(is_css_document) == False]
+def is_code_like_text(text):
+    total_chars = len(text)
+    alnum_chars = sum(c.isalnum() or c.isspace() for c in text)
+    non_alnum_ratio = (total_chars - alnum_chars) / total_chars
+    return non_alnum_ratio > 0.3
+
+def is_meaningful_text(text):
+    if pd.isna(text) or len(text.strip()) == 0:
+        return False
+    language, confidence = langid.classify(text)
+    confidence = confidence if language == 'en' else 0
+    confidence = abs(confidence)
+    return confidence > 100
+
+def is_valid_document(text):
+    if not is_meaningful_text(text):
+        return False
+    if is_css_document(text):
+        return False
+    if is_code_like_text(text):
+        return False
+    if is_html_document(text):
+        return False
+    if is_wp_preset_document(text):
+        return False
+    return True
+
+# Apply the composite validation function
+metadata_df = metadata_df[metadata_df['text'].apply(is_valid_document)]
+
+
 
 
 def preprocess_text(text):
-    #text = text.lower()
-    #text = re.sub(r'(#+\S+|@\S+|\s+@\S+|http\S+|word01|word02|[^A-Za-z0-9\'\’ ]+)', "", text)
+    text = text.lower()
     text = re.sub(r'\n{3,}', '\n\n', text)
     text = re.sub(r'\s{2,}', ' ', text)
+    
     tokens = word_tokenize(text)
+    tokens = [word for word in tokens if word not in string.punctuation] 
+    
+    stopwords = nltk.corpus.stopwords.words('english')
+    
+    tokens = [word for word in tokens if word not in stopwords]
     cleaned_text = ' '.join(tokens)
     return cleaned_text
 
-metadata_df['text_processed'] = metadata_df['text'].apply(preprocess_text)
+metadata_df['text_processed'] = metadata_df['text'].progress_apply(preprocess_text)
 print(metadata_df['text_processed'].head(5))
 
 tfidf_vectorizer = TfidfVectorizer()
@@ -185,7 +241,7 @@ metadata_df['theme'] = metadata_df['text_processed'].apply(lambda text: assign_t
 """
 feature_names = tfidf_vectorizer.get_feature_names_out()
 
-# 2. Créer une fonction pour attribuer le thème basé sur le plus grand score TF-IDF des mots-clés
+# Fonction pour attribuer le thème basé sur le plus grand score TF-IDF des mots-clés
 def assign_theme_with_highest_tfidf(text, keywords):
     # Transformer le texte en un vecteur TF-IDF
     tfidf_vector = tfidf_vectorizer.transform([text])
@@ -210,7 +266,7 @@ def assign_theme_with_highest_tfidf(text, keywords):
         return 'Aucun thème'
 
 # 3. Ajouter une nouvelle colonne 'theme' avec le thème ayant le mot-clé au score TF-IDF le plus élevé
-metadata_df['theme'] = metadata_df['text_processed'].apply(lambda text: assign_theme_with_highest_tfidf(text, keywords))
+metadata_df['theme'] = metadata_df['text_processed'].progress_apply(lambda text: assign_theme_with_highest_tfidf(text, keywords))
 
 metadata_df.to_csv('Data_csv/data_preprocessed.csv', index=False)
 
