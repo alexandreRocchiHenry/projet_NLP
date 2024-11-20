@@ -1,2 +1,0 @@
-Embedding Method,Clustering Method,Reduction Method,silhoutte score,davies score,calinski score
-sentence_transformer_embeddings,Kmeans_clustering,display_ca,0.06517711,3.251254982149188,14.655354031983451
