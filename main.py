@@ -340,16 +340,16 @@ def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
 
 
 # Clustering pipeline
-def pipeline(dataframe, embedding_method, clustering_method, taille_cluster=[10,11], reduction_method=display_pca):
+def pipeline(dataframe, embedding_method, clustering_method, nb_cluster = 10,reduction_method=None):
     print(f"start embedding for {embedding_method.__name__} and {clustering_method.__name__}")
     embeddings = embedding_method(dataframe)
     print("clustering")
-    for i in range(taille_cluster[0], taille_cluster[1]):
-        labels = clustering_method(i, embeddings, embedding_method.__name__)
+    labels = clustering_method(nb_cluster, embeddings, embedding_method.__name__)
     print("scoring")
     scores = score_function(embeddings, labels)
     print(f"silhouette_score: {scores[0]}, davies_bouldin_score: {scores[1]}, calinski_harabasz_score: {scores[2]}")
-    reduction_method(embeddings, dataframe, labels, embedding_method.__name__, clustering_method.__name__)
+    if reduction_method != None:
+        reduction_method(embeddings, dataframe, labels, embedding_method.__name__, clustering_method.__name__)
     return scores
 
 
@@ -385,7 +385,6 @@ def main():
                      
                 })
 
-        # Conversion des résultats en DataFrame
         results_df = pd.DataFrame(results)
 
         # Sauvegarde des résultats dans un fichier CSV
