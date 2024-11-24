@@ -93,9 +93,6 @@ def is_valid_document(text):
 # Apply the composite validation function
 metadata_df = metadata_df[metadata_df['text'].apply(is_valid_document)]
 
-
-
-
 def preprocess_text(text):
     text = text.lower()
     text = re.sub(r'\n{3,}', '\n\n', text)
@@ -202,43 +199,7 @@ metadata_df['categorie Institution'] = metadata_df['Institution'].apply(categori
 # Charger le fichier JSON contenant les mots-clés des thèmes
 with open('start_point/themes.json', 'r') as f:
     keywords = json.load(f)
-"""
-# Fonction pour attribuer des thèmes en fonction des mots-clés
-def assign_themes(text, keywords):
-    themes_found = []
-    text_lower = text.lower()
-    
-    for theme, kw_list in keywords.items():
-        if any(kw.lower() in text_lower for kw in kw_list):
-            themes_found.append(theme)
-    
-    return ', '.join(themes_found) if themes_found else 'Aucun thème'
 
-# Ajouter une nouvelle colonne 'thèmes' avec les thèmes détectés
-metadata_df['themes'] = metadata_df['text_processed'].apply(lambda text: assign_themes(text, keywords))
-"""
-"""
-# Fonction pour attribuer le thème avec le plus de mots-clés trouvés
-def assign_theme_with_most_keywords(text, keywords):
-    text_lower = text.lower()
-    theme_counts = {}
-
-    for theme, kw_list in keywords.items():
-        # Compter les occurrences de mots-clés pour chaque thème
-        count = sum(kw.lower() in text_lower for kw in kw_list)
-        if count > 0:
-            theme_counts[theme] = count
-
-    # Trouver le thème avec le plus grand nombre de mots-clés
-    if theme_counts:
-        max_theme = max(theme_counts, key=theme_counts.get)
-        return max_theme
-    else:
-        return 'Aucun thème'
-
-# Ajouter une nouvelle colonne 'theme' avec le thème ayant le plus de mots-clés détectés
-metadata_df['theme'] = metadata_df['text_processed'].apply(lambda text: assign_theme_with_most_keywords(text, keywords))
-"""
 feature_names = tfidf_vectorizer.get_feature_names_out()
 
 # Fonction pour attribuer le thème basé sur le plus grand score TF-IDF des mots-clés
