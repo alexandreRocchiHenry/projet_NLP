@@ -113,7 +113,7 @@ log_fp = open(LOG_FILE, "w", encoding="utf-8")
 # Parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--data")
-parser.add_argument("-m", "--method", choices=["iramuteq", "cortext"])
+parser.add_argument("-m", "--method", choices=["iramuteq", "cortext"], default = "iramuteq")
 parser.add_argument("-t", "--themes", default="themes.json")
 # parser.add_argument("-d", "--destination", choices=["iramuteq", "cortext"])
 
