@@ -27,8 +27,11 @@ from sentence_transformers import SentenceTransformer
 
 from transformers import RobertaModel, RobertaTokenizer
 
+from nltk.util import ngrams
 
-loaded_glove_model = api.load("glove-wiki-gigaword-300")
+
+
+
 nltk.download('punkt')
 
 
@@ -86,6 +89,58 @@ def co_occurence_matrix(corpus, vocabulary, window=0, distance_weighting=False):
                 cooc_matrix[ctx_idx, idx] += weight * 1.0
     return cooc_matrix
 
+def co_occurence_matrix_ngram(corpus, vocabulary, window=0, distance_weighting=False):
+    stopwords = nltk.corpus.stopwords.words('english')
+    ngram_range = (2,3)
+    l = len(vocabulary)
+    cooc_matrix = np.zeros((l,l))
+    for sent in corpus:
+        # Get the sentence
+        words = [word.lower() for word in word_tokenize(sent) if word.isalpha() and word not in stopwords]
+        ngram_list = []
+        for n in range(ngram_range[0], ngram_range[1] + 1):
+            ngram_list.extend([' '.join(ngram) for ngram in ngrams(words, n)])
+        sent_idx = [vocabulary.get(ngram, len(vocabulary)-1) for ngram in ngram_list]
+        # Avoid one-word sentences - can create issues in normalization:
+        if len(sent_idx) == 1:
+                sent_idx.append(len(vocabulary)-1)
+        # Go through the indexes and add 1 / dist(i,j) to M[i,j] if words of index i and j appear in the same window
+        for i, idx in enumerate(sent_idx):
+            # If we consider a limited context:
+            if window > 0:
+                # Create a list containing the indexes that are on the left of the current index 'idx_i'
+                l_ctx_idx = [sent_idx[j] for j in range(max(0,i-window),i)]                
+            # If the context is the entire document:
+            else:
+                # The list containing the left context is easier to create
+                l_ctx_idx = sent_idx[:i]
+            # Go through the list and update M[i,j]:        
+            for j, ctx_idx in enumerate(l_ctx_idx):
+                if distance_weighting:
+                    weight = 1.0 / (len(l_ctx_idx) - j)
+                else:
+                    weight = 1.0
+                cooc_matrix[idx, ctx_idx] += weight * 1.0
+                cooc_matrix[ctx_idx, idx] += weight * 1.0
+    return cooc_matrix
+
+def vocabulary_fct_ngram(corpus, voc_threshold,ngram_range):
+    stopwords = nltk.corpus.stopwords.words('english')
+    word_counts = {}
+    for sent in corpus:
+        tokens = [word.lower() for word in word_tokenize(sent) if word.isalpha() and word not in stopwords]
+        for n in range(ngram_range[0], ngram_range[1] + 1):
+            ngram_list = [' '.join(gram) for gram in ngrams(tokens, n)]
+            for ngram in ngram_list:
+                if ngram not in word_counts:
+                    word_counts[ngram] = 0
+                word_counts[ngram] += 1          
+    words = sorted(word_counts.keys(), key=word_counts.get, reverse=True)
+    if voc_threshold > 0:
+        words = words[:voc_threshold] + ['UNK']   
+    vocabulary = {words[i] : i for i in range(len(words))}
+    return vocabulary, {word: word_counts.get(word, 0) for word in vocabulary}
+
 def pmi(co_oc, positive=True):
     sum_vec = co_oc.sum(axis=0)
     sum_tot = sum_vec.sum()
@@ -96,9 +151,6 @@ def pmi(co_oc, positive=True):
         pmi[pmi < 0] = 0.0
     return pmi
 
-
-
-
 def get_embedding(word, model):
     try:
         return model[word]
@@ -106,6 +158,7 @@ def get_embedding(word, model):
         return np.zeros(100)  
 
 def glove_embeddings(df):
+    loaded_glove_model = api.load("glove-wiki-gigaword-300")    
     all_embeddings = []
     for text in df['text_processed']:
         word_vectors = []
@@ -157,6 +210,53 @@ def SVD_embeddings_PPMI(df):
             document_embedding = np.zeros(svd_ppmi.n_components)
         all_embeddings.append(document_embedding)
         all_embeddings_a = np.array(all_embeddings)
+    return all_embeddings_a
+
+def SVD_embeddings_ngram(df):
+    ngram_range = (2,3)
+    svd = TruncatedSVD(n_components=300)
+    texts = df['text'].values
+    vocab,_  = vocabulary_fct_ngram(texts, 5000, ngram_range=ngram_range)
+    M = co_occurence_matrix_ngram(texts, vocab, window=5, distance_weighting=False)
+    SVDEmbeddings = svd.fit_transform(M)
+    all_embeddings = []
+    for texts in df['text_processed']:
+        words = texts.split()
+        ngram_list = []
+        for n in range(ngram_range[0], ngram_range[1] + 1):
+            ngram_list.extend([' '.join(ngram) for ngram in ngrams(words, n)])
+        ngram_indices = [vocab.get(ngram) for ngram in ngram_list if ngram in vocab]
+        text_embeddings = [SVDEmbeddings[idx] for idx in ngram_indices if idx is not None]
+        if text_embeddings:
+            document_embedding = np.mean(text_embeddings, axis=0)
+        else:
+            document_embedding = np.zeros(svd.n_components)
+        all_embeddings.append(document_embedding)
+    all_embeddings_a = np.array(all_embeddings)
+    return all_embeddings_a
+
+def SVD_embeddings_PPMI_ngram(df):
+    ngram_range = (2,3)
+    svd_ppmi = TruncatedSVD(n_components=300)
+    texts = df['text'].values
+    vocab,_  = vocabulary_fct_ngram(texts, 5000, ngram_range=ngram_range)
+    M = co_occurence_matrix_ngram(texts, vocab, window=5, distance_weighting=False)
+    PPMI = pmi(M)
+    SVDEmbeddings = svd_ppmi.fit_transform(PPMI)
+    all_embeddings = []
+    for texts in df['text_processed']:
+        words = texts.split()
+        ngram_list = []
+        for n in range(ngram_range[0], ngram_range[1] + 1):
+            ngram_list.extend([' '.join(ngram) for ngram in ngrams(words, n)])
+        ngram_indices = [vocab.get(ngram) for ngram in ngram_list if ngram in vocab]
+        text_embeddings = [SVDEmbeddings[idx] for idx in ngram_indices if idx is not None]
+        if text_embeddings:
+            document_embedding = np.mean(text_embeddings, axis=0)
+        else:
+            document_embedding = np.zeros(svd_ppmi.n_components)
+        all_embeddings.append(document_embedding)
+    all_embeddings_a = np.array(all_embeddings)
     return all_embeddings_a
 
 def roberta_embeddings(df):
@@ -297,7 +397,7 @@ def display_pca(embeddings, df, labels, embedding_name, clustering_name):
     embeddings_pca = pca(embeddings)
     data_pca = pd.DataFrame({'x': embeddings_pca[:, 0],
                             'y': embeddings_pca[:, 1],
-                            'institution': df[labels],
+                            'institution': df['Institution'],
                             'title': df["Name of the document"],
                             'labels': labels
                             })
@@ -320,7 +420,7 @@ def display_tsne(embeddings, df, labels, embedding_name, clustering_name):
 
     data_th = pd.DataFrame({'x': docs_tsne_th[:,0],
                             'y': docs_tsne_th[:,1],
-                            'institution': df[labels],
+                            'institution': df['Institution'],
                             'title': df["Name of the document"],
                             'labels': labels
                             #'labels': df["categorie Institution"]
@@ -359,9 +459,9 @@ def main():
     data_proprocessed = "Data_csv/data_preprocessed.csv"
     data_df = pd.read_csv(data_proprocessed)
 
-    Clustering_methods = [Kmeans_clustering]
-    Embedding_methods = [sentence_transformer_embeddings]
-    reduction_methods = [display_pca]
+    Clustering_methods = [Kmeans_clustering, gaussian_clustering, hierarchical_clustering]
+    Embedding_methods = [SVD_embeddings_ngram, SVD_embeddings_PPMI_ngram]
+    reduction_methods = [display_pca, display_tsne]
 
     results = []
 
@@ -388,7 +488,7 @@ def main():
         results_df = pd.DataFrame(results)
 
         # Sauvegarde des résultats dans un fichier CSV
-        results_df.to_csv(f'pipeline_results_{reduction.__name__}_2.csv', index=False)
+        results_df.to_csv(f'pipeline_results_{reduction.__name__}_3.csv', index=False)
 
 
 
