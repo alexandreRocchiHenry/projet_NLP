@@ -20,12 +20,13 @@ Le projet se décompose en quatres grands axes majeurs, le prétraitement des do
 - dans le dossier pipeline_startpoint, lancer le script [pipeline_start_point.py](/pipeline_startpoint/pipeline_start_point.py)
 
     cd pipeline_startpoint
+    
     python3 pipeline_start_point.py
 
 - dans le dossier principal lancer [preprocess_propre.py](/preprocess_propre.py)
   
     cd ..
-    
+
     python3 preprocess_propre.py
 
 - utiliser le [main.py](/main.py) contenant le code pour lancer le clustering. Ce code peut être modifié pour prendre différentes méthodes 
