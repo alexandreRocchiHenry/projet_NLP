@@ -13,7 +13,7 @@ Le projet se décompose en quatres grands axes majeurs, le prétraitement des do
 1- cloner le git
 
 
-    git clone git@github.com:alexandreRocchiHenry/Animals-Cassification.git
+    git clone git@github.com:alexandreRocchiHenry/projet_NLP.git
 
 
 2- télécharger les dépendances avec pip
@@ -36,4 +36,6 @@ d'embedings, de clustering et réduction de dimension.
 - differents notebook permettent aussi de lancer [BERTopic](/BERTopic.ipynb), [GPTopic](/GPTopic.ipynb), [LDA](/LDA.ipynb) et [detailled_analysis](/detailled_analysis.ipynb)
   
 
+### Résultats
 
+Les résultats de notre projet ainsi que la méthode sont expliqués dans le rapport de projet disponnible [ici](/rapport_nlp.doc)
