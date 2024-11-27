@@ -482,7 +482,6 @@ def main():
                     'silhoutte score': result[0],  
                     'davies score' : result[1], 
                     'calinski score' : result[2],
-                     
                 })
 
         results_df = pd.DataFrame(results)

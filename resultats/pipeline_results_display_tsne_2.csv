@@ -1,4 +1,4 @@
-Embedding Method,Clustering Method,Reduction Method,silhoutte score,davies score,calinski score
+Embedding Method,Clustering Method,Reduction Method,silhoutte score,davies score,calinski score 
 roberta_embeddings,Kmeans_clustering,display_pca,0.06148610636591911,2.653827502965906,24.272067388839798
 roberta_embeddings,Kmeans_clustering,display_tsne,0.06148610636591911,2.653827502965906,24.272067388839798
 roberta_embeddings,gaussian_clustering,display_pca,0.0529421791434288,3.040456212442623,27.060935905906423
