@@ -38,4 +38,4 @@ d'embedings, de clustering et réduction de dimension.
 
 ### Résultats
 
-Les résultats de notre projet ainsi que la méthode sont expliqués dans le rapport de projet disponnible [ici](/rapport_nlp.doc)
+Les résultats de notre projet ainsi que la méthode sont expliqués dans le rapport de projet disponnible [ici](/Rapport%20projet%20NLP%20clustering.pdf)
