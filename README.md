@@ -18,9 +18,9 @@ Le projet se décompose en quatres grands axes majeurs, le prétraitement des do
     pip install -r requirements.txt
 
 - dans le dossier pipeline_startpoint, lancer le script [pipeline_start_point.py](/pipeline_startpoint/pipeline_start_point.py)
-
-    cd pipeline_startpoint
     
+    """bash
+    cd pipeline_startpoint
     python3 pipeline_start_point.py
 
 - dans le dossier principal lancer [preprocess_propre.py](/preprocess_propre.py)
