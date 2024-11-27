@@ -1,28 +1,37 @@
-import os
 import glob
-import nltk as nltk
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-import langid
-import pandas as pd
+import os
 import re
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-import ujson as json
-from tqdm import tqdm
 import string
 
+from bs4 import BeautifulSoup
+import langid
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+import numpy as np
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from tqdm import tqdm
+import ujson as json
+
+# Initialize tqdm for pandas
 tqdm.pandas()
+
+# Télécharger les données nécessaires de NLTK
 nltk.download('stopwords')
 nltk.download('punkt')
 
-
+# Lire le fichier CSV de métadonnées dans un DataFrame
 metadata_df = pd.read_csv('Data_csv/metadata.csv')
 
-list_file = sorted(glob.glob('data/txts/*.txt'), key=lambda x: int(os.path.basename(x).split('.')[0]))
+# Obtenir une liste triée des fichiers texte
+list_file = sorted(
+    glob.glob('data/txts/*.txt'),
+    key=lambda x: int(os.path.basename(x).split('.')[0])
+)
 
-for i, filename in enumerate(list_file):
-
+# Parcourir chaque fichier texte et ajouter son contenu au DataFrame
+for filename in list_file:
     name = os.path.basename(filename).split('.')[0]
     index = metadata_df[metadata_df['doc_id'] == int(name)].index
     if not index.empty:
@@ -32,20 +41,40 @@ for i, filename in enumerate(list_file):
     else:
         print(f"Le document ID '{name}' n'a pas été trouvé dans metadata_df")
 
-metadata_df.dropna(subset=['text'],inplace=True)
+# Supprimer les lignes avec des valeurs manquantes dans 'text'
+metadata_df.dropna(subset=['text'], inplace=True)
 
-def get_language(text):
+def get_language(text: str) -> str:
+    """Détermine la langue du texte donné en utilisant langid.
+
+    Args:
+        text (str): Le texte à analyser.
+
+    Returns:
+        str: Le code de langue détecté, ou 'unknown' si indétectable.
+    """
     if pd.isna(text) or len(text.strip()) == 0:
         return 'unknown'  
     langue, confiance = langid.classify(text)
     return langue
 
+# Appliquer la détection de la langue à la colonne 'text'
 metadata_df['langue'] = metadata_df['text'].apply(get_language)
+
+# Conserver uniquement les textes en anglais
 metadata_df = metadata_df[metadata_df['langue'] == 'en']
 
-from bs4 import BeautifulSoup
 
-def is_html_document(text):
+def is_html_document(text: str):
+    """
+    Détermine si un texte donné est probablement un document HTML.
+
+    Args:
+        text (str): Le texte à analyser.
+
+    Returns:
+        bool: True si le texte est probablement un document HTML, False sinon.
+    """
     soup = BeautifulSoup(text, "html.parser")
     # Si le contenu textuel est très faible par rapport au contenu total, c'est probablement du code HTML/CSS
     text_length = len(soup.get_text(strip=True))
@@ -53,17 +82,43 @@ def is_html_document(text):
     return text_length / total_length < 0.5  # Seuil à ajuster
 
 def is_wp_preset_document(text):
-    # Rechercher les occurrences de '-- wp -- preset --'
+    """
+     Rechercher les occurrences de '-- wp -- preset --'
+
+    Args:
+        text (str): Le texte à analyser.
+
+    Returns:
+        bool: True si le texte contient beaucoup de balise wordpress, False sinon.
+    """
     preset_pattern = r'--\s*wp\s*--\s*preset\s*--'
     matches = re.findall(preset_pattern, text, re.IGNORECASE)
     return len(matches) > 5 
 
 def is_css_document(text):
+    """
+     Rechercher les occurrences de balises CSS
+
+    Args:
+        text (str): Le texte à analyser.
+
+    Returns:
+        bool: True si le texte contient beaucoup de balise CSS, False sinon.
+    """
     css_pattern = r'[^\n]*\{\s*[^}]*\s*\}'
     matches = re.findall(css_pattern, text)
     return len(matches) > 5
 
 def is_code_like_text(text):
+    """
+     Rechercher les occurrences de caractères non-alphanumériques dans le texte.
+
+    Args:
+        text (str): Le texte à analyser.
+
+    Returns:
+        bool: True si le texte contient beaucoup de caractère non alphanumériques, False sinon.
+    """
     total_chars = len(text)
     alnum_chars = sum(c.isalnum() or c.isspace() for c in text)
     non_alnum_ratio = (total_chars - alnum_chars) / total_chars
@@ -92,6 +147,9 @@ def is_valid_document(text):
 
 # Apply the composite validation function
 metadata_df = metadata_df[metadata_df['text'].apply(is_valid_document)]
+
+
+
 
 def preprocess_text(text):
     text = text.lower()
@@ -197,9 +255,45 @@ def categorize_organization(org):
 metadata_df['categorie Institution'] = metadata_df['Institution'].apply(categorize_organization)
 
 # Charger le fichier JSON contenant les mots-clés des thèmes
-with open('pipeline_startpoint/themes.json', 'r') as f:
+with open('start_point/themes.json', 'r') as f:
     keywords = json.load(f)
+"""
+# Fonction pour attribuer des thèmes en fonction des mots-clés
+def assign_themes(text, keywords):
+    themes_found = []
+    text_lower = text.lower()
+    
+    for theme, kw_list in keywords.items():
+        if any(kw.lower() in text_lower for kw in kw_list):
+            themes_found.append(theme)
+    
+    return ', '.join(themes_found) if themes_found else 'Aucun thème'
 
+# Ajouter une nouvelle colonne 'thèmes' avec les thèmes détectés
+metadata_df['themes'] = metadata_df['text_processed'].apply(lambda text: assign_themes(text, keywords))
+"""
+"""
+# Fonction pour attribuer le thème avec le plus de mots-clés trouvés
+def assign_theme_with_most_keywords(text, keywords):
+    text_lower = text.lower()
+    theme_counts = {}
+
+    for theme, kw_list in keywords.items():
+        # Compter les occurrences de mots-clés pour chaque thème
+        count = sum(kw.lower() in text_lower for kw in kw_list)
+        if count > 0:
+            theme_counts[theme] = count
+
+    # Trouver le thème avec le plus grand nombre de mots-clés
+    if theme_counts:
+        max_theme = max(theme_counts, key=theme_counts.get)
+        return max_theme
+    else:
+        return 'Aucun thème'
+
+# Ajouter une nouvelle colonne 'theme' avec le thème ayant le plus de mots-clés détectés
+metadata_df['theme'] = metadata_df['text_processed'].apply(lambda text: assign_theme_with_most_keywords(text, keywords))
+"""
 feature_names = tfidf_vectorizer.get_feature_names_out()
 
 # Fonction pour attribuer le thème basé sur le plus grand score TF-IDF des mots-clés
