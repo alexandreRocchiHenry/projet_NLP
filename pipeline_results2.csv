@@ -1,2 +1,0 @@
-Embedding Method,Clustering Method,silhoutte score,davies score,calinski score
-sentence_transformer_embeddings,gaussian_clustering,0.047638237,3.167610102499745,12.932860030973904
