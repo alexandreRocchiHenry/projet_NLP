@@ -9,7 +9,8 @@ Le projet se décompose en quatres grands axes majeurs, le prétraitement des do
 
 ### Instalation et Configuration
 
-- cloner le git
+
+cloner le git
 
 
     git clone git@github.com:alexandreRocchiHenry/Animals-Cassification.git
