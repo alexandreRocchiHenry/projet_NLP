@@ -9,22 +9,23 @@ Le projet se décompose en quatres grands axes majeurs, le prétraitement des do
 
 ### Instalation et Configuration
 
-- cloner le git
+
+1- cloner le git
 
 
     git clone git@github.com:alexandreRocchiHenry/Animals-Cassification.git
 
 
-- télécharger les dépendances avec pip
+2- télécharger les dépendances avec pip
 
     pip install -r requirements.txt
 
-- dans le dossier pipeline_startpoint, lancer le script [pipeline_start_point.py](/pipeline_startpoint/pipeline_start_point.py)
+3- dans le dossier pipeline_startpoint, lancer le script [pipeline_start_point.py](/pipeline_startpoint/pipeline_start_point.py)
     
     cd pipeline_startpoint
     python3 pipeline_start_point.py
 
-- dans le dossier principal lancer [preprocess_propre.py](/preprocess_propre.py)
+4- dans le dossier principal lancer [preprocess_propre.py](/preprocess_propre.py)
   
     cd ..
     python3 preprocess_propre.py
