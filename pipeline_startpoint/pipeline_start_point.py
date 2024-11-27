@@ -207,9 +207,3 @@ for i in doc_occurrences:
 
 log_fp.close()
 corpus_file.close()
-"""
-# regarder aussi les co-occurrences de thèmes
-print("Summary stats")
-for k, v in doc_counts.items():
-    print(f"{k}: {v} ({(v / (nb_docs if nb_docs > 0 else 1)) * 100:.2f}%)")
-"""
