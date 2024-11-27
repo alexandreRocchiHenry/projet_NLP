@@ -10,8 +10,10 @@ Le projet se décompose en quatres grands axes majeurs, le prétraitement des do
 ### Instalation et Configuration
 
 - cloner le git
-  
-    git clone git@github.com:alexandreRocchiHenry/projet_NLP.git
+
+
+    git clone git@github.com:alexandreRocchiHenry/Animals-Cassification.git
+
 
 - télécharger les dépendances avec pip
 
