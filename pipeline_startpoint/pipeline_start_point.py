@@ -10,7 +10,6 @@ import argparse
 import numpy
 import ujson as json
 
-
 requests.packages.urllib3.disable_warnings()
 
 URL_FILE = "list_urls.txt"
