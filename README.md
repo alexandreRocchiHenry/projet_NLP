@@ -30,10 +30,10 @@ Le projet se décompose en quatres grands axes majeurs, le prétraitement des do
     cd ..
     python3 preprocess_propre.py
 
-- utiliser le [main.py](/main.py) contenant le code pour lancer le clustering. Ce code peut être modifié pour prendre différentes méthodes 
+5- utiliser le [main.py](/main.py) contenant le code pour lancer le clustering. Ce code peut être modifié pour prendre différentes méthodes 
 d'embedings, de clustering et réduction de dimension. 
 
-- differents notebook permettent aussi de lancer [BERTopic](/BERTopic.ipynb), [GPTopic](/GPTopic.ipynb), [LDA](/LDA.ipynb) et [detailled_analysis](/detailled_analysis.ipynb)
+6- differents notebook permettent aussi de lancer [BERTopic](/BERTopic.ipynb), [GPTopic](/GPTopic.ipynb), [LDA](/LDA.ipynb) et [detailled_analysis](/detailled_analysis.ipynb)
   
 
 ### Résultats
