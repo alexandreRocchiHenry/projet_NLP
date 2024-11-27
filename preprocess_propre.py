@@ -255,7 +255,7 @@ def categorize_organization(org):
 metadata_df['categorie Institution'] = metadata_df['Institution'].apply(categorize_organization)
 
 # Charger le fichier JSON contenant les mots-clés des thèmes
-with open('start_point/themes.json', 'r') as f:
+with open('pipeline_startpoint/themes.json', 'r') as f:
     keywords = json.load(f)
 """
 # Fonction pour attribuer des thèmes en fonction des mots-clés
