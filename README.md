@@ -7,7 +7,7 @@ Durant ce projet, la collection MapAIE de 627 chartes et manifestes autour de l'
 Le projet se décompose en quatres grands axes majeurs, le prétraitement des données, la vectorisation des documents, la clusterisation et topic modeling ainsi que la visualisation de ces clusters. Pour chacune des étapes, plusieurs techniques de ont été utilisées afin d’établir une pipeline optimale pour la clusterisation des articles du corpus.
 
 
-### Instalation et Configuration
+### Installation et Configuration
 
 
 1- cloner le git
