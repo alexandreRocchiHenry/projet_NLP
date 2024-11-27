@@ -37,7 +37,7 @@ def csv_to_dict(filepath):
     return manifestos_list
 
 manifestos_list = csv_to_dict(MANIFESTOS_FILE)
-list_of_urls = [ x["URL"] for x in manifestos_list if x["Status"].lower() == "included" ]
+list_of_urls = [ x["URL"] for x in manifestos_list] #if x["Status"].lower() == "included" ]
 user_agents = [ x.strip() for x in open(UA_FILE,  encoding="utf8").readlines() ] 
 
 # Create output directory if it does not exist
